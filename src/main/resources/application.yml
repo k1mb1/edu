@@ -9,6 +9,14 @@ spring:
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
   jpa:
-    show-sql: ${JPA_SHOW_SQL}
     hibernate:
       ddl-auto: ${JPA_HIBERNATE_DDL_AUTO}
+    properties:
+      hibernate:
+        show_sql: ${JPA_SHOW_SQL}
+        format_sql: ${JPA_SHOW_SQL}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OAUTH2_ISSUER_URI}

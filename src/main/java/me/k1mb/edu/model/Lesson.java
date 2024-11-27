@@ -1,10 +1,9 @@
 package me.k1mb.edu.model;
 
 import jakarta.persistence.*;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,20 +16,17 @@ public class Lesson {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
+    @JoinColumn(name = "course_id")
     private Course course;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title")
     private String title;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    //private Content content;
+    // private Content content;
 
-    @Column(name = "order", nullable = false)
-    private int order;
-
-    @Column(name = "duration", nullable = false)
-    private int duration;
+    @Column(name = "duration")
+    private Integer duration;
 }
