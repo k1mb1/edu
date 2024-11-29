@@ -33,9 +33,8 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
                         jwtGrantedAuthoritiesConverter.convert(jwt).stream(), extractResourceRoles(jwt).stream())
                 .collect(Collectors.toSet());
 
-        User user = userService.createFromJwt(
-                jwt); // temporary registration user for association not in keycloak -> TODO: registration and
-        // authorization
+        User user = userService.createFromJwt(jwt);
+        // temporary registration user for association not in keycloak -> TODO: registration and authorization
 
         return new JwtAuthenticationToken(jwt, authorities, getPrincipleClaimName(jwt));
     }

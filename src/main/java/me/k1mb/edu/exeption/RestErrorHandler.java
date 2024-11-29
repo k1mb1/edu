@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
 public class RestErrorHandler {
@@ -39,8 +40,21 @@ public class RestErrorHandler {
             MethodArgumentNotValidException ex, HttpServletRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(
                 LocalDateTime.now(),
-                HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.name(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.name(),
+                ex.getMessage(),
+                request.getRequestURI());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    // MethodArgumentTypeMismatchException
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorMessage> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.name(),
                 ex.getMessage(),
                 request.getRequestURI());
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);

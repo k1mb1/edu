@@ -17,6 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private static final String[] PUBLIC_ENDPOINTS = {"/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs"};
+
     private final UserService userService;
 
     @Bean
@@ -25,7 +27,7 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs")
+                        .requestMatchers(PUBLIC_ENDPOINTS)
                         .permitAll()
                         .anyRequest()
                         .authenticated())
