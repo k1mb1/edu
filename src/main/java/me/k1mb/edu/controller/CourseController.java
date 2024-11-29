@@ -35,6 +35,10 @@ import org.springframework.web.bind.annotation.*;
             @ApiResponse(
                     responseCode = "403",
                     description = "Forbidden",
+                    content = @Content(schema = @Schema(implementation = ErrorMessage.class))),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request",
                     content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
         })
 @Tag(name = "Courses", description = "API for managing courses")
@@ -56,10 +60,6 @@ public class CourseController {
             value = {
                 @ApiResponse(responseCode = "200", description = "Successfully retrieved course details"),
                 @ApiResponse(
-                        responseCode = "400",
-                        description = "Bad Request",
-                        content = @Content(schema = @Schema(implementation = ErrorMessage.class))),
-                @ApiResponse(
                         responseCode = "404",
                         description = "Not found",
                         content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
@@ -73,14 +73,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Create a new course", description = "Creates a new course with the specified parameters.")
-    @ApiResponses(
-            value = {
-                @ApiResponse(responseCode = "201", description = "Successfully created the course"),
-                @ApiResponse(
-                        responseCode = "400",
-                        description = "Bad Request",
-                        content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
-            })
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Successfully created the course")})
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == #course.authorId.toString())")
     @PostMapping
     public ResponseEntity<CourseDtoResponse> createCourse(@Valid @RequestBody CourseDtoRequest course) {
@@ -108,14 +101,7 @@ public class CourseController {
     @Operation(
             summary = "Update an existing course",
             description = "Update an existing course with the provided details")
-    @ApiResponses(
-            value = {
-                @ApiResponse(responseCode = "200", description = "Course successfully updated"),
-                @ApiResponse(
-                        responseCode = "400",
-                        description = "Bad Request",
-                        content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
-            })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Course successfully updated")})
     @PreAuthorize(
             "hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseService.checkAuthor(#course_id).toString() and authentication.name == #course.authorId.toString())")
     @PutMapping("/{course_id}")
@@ -148,10 +134,6 @@ public class CourseController {
     @ApiResponses(
             value = {
                 @ApiResponse(responseCode = "201", description = "Lesson successfully created"),
-                @ApiResponse(
-                        responseCode = "400",
-                        description = "Bad Request",
-                        content = @Content(schema = @Schema(implementation = ErrorMessage.class))),
                 @ApiResponse(
                         responseCode = "404",
                         description = "Not found",
