@@ -1,9 +1,10 @@
 package me.k1mb.edu.model;
 
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -24,8 +25,6 @@ public class Lesson {
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-
-    // private Content content;
 
     @Column(name = "duration")
     private Integer duration;

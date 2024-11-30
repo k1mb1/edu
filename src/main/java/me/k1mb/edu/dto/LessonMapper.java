@@ -1,9 +1,10 @@
-package me.k1mb.edu.DTO;
+package me.k1mb.edu.dto;
 
-import java.util.UUID;
 import me.k1mb.edu.model.Course;
 import me.k1mb.edu.model.Lesson;
 import org.mapstruct.*;
+
+import java.util.UUID;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface LessonMapper {
@@ -15,7 +16,7 @@ public interface LessonMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "courseId", target = "course.id")
-    Lesson partialUpdate(LessonDtoRequest lessonDtoRequest, @MappingTarget Lesson lesson);
+    void partialUpdate(LessonDtoRequest lessonDtoRequest, @MappingTarget Lesson lesson);
 
     default Course createCourse(UUID courseId) {
         if (courseId == null) {

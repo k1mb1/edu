@@ -1,9 +1,11 @@
-package me.k1mb.edu.DTO;
+package me.k1mb.edu.dto;
 
-import java.util.UUID;
+import lombok.NonNull;
 import me.k1mb.edu.model.Course;
 import me.k1mb.edu.model.User;
 import org.mapstruct.*;
+
+import java.util.UUID;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CourseMapper {
@@ -15,12 +17,9 @@ public interface CourseMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "authorId", target = "author")
-    Course partialUpdate(CourseDtoRequest courseDtoRequest, @MappingTarget Course course);
+    void partialUpdate(CourseDtoRequest courseDtoRequest, @MappingTarget Course course);
 
-    default User createUser(UUID authorId) {
-        if (authorId == null) {
-            return null;
-        }
+    default User createUser(@NonNull UUID authorId) {
         User user = new User();
         user.setId(authorId);
         return user;
