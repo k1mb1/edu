@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
 @Component
@@ -35,10 +34,10 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         val authorities = Stream.concat(
                 jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
                 extractResourceRoles(jwt).stream())
-            .collect(toSet());
+            .collect(toUnmodifiableSet());
 
         val user = userService.createFromJwt(jwt);
-        // temporary registration user for association not in keycloak -> TODO: registration and authorization
+        // TODO: registration user
 
         return new JwtAuthenticationToken(jwt, authorities, jwt.getSubject());
     }

@@ -10,13 +10,13 @@ import java.util.UUID;
 public interface CourseService {
     List<CourseDtoResponse> getAll();
 
-    CourseDtoResponse getById(@NonNull final UUID id);
+    CourseDtoResponse getById(@NonNull UUID id);
 
-    CourseDtoResponse createCourse(@NonNull final CourseDtoRequest course);
+    CourseDtoResponse createCourse(@NonNull CourseDtoRequest course);
 
-    CourseDtoResponse updateCourse(@NonNull final UUID id, @NonNull final CourseDtoRequest course);
+    CourseDtoResponse updateCourse(@NonNull UUID id, @NonNull CourseDtoRequest course);
 
-    void deleteCourse(@NonNull final UUID id);
+    void deleteCourse(@NonNull UUID id);
 
-    UUID checkAuthor(@NonNull final UUID course_id);
+    UUID checkAuthor(@NonNull UUID course_id);
 }

@@ -7,9 +7,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.util.UUID;
 
 public interface UserService {
-    User getById(@NonNull final UUID id);
+    User getById(@NonNull UUID id);
 
-    User create(@NonNull final User user);
+    User create(@NonNull User user);
 
-    User createFromJwt(@NonNull final Jwt jwt);
+    User createFromJwt(@NonNull Jwt jwt);
 }

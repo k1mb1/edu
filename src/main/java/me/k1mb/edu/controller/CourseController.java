@@ -59,7 +59,8 @@ public class CourseController {
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
     @GetMapping("/{course_id}")
     public ResponseEntity<CourseDtoResponse> getById(
-        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") final UUID course_id) {
+        @Parameter(description = "Course ID", required = true)
+        @PathVariable("course_id") final UUID course_id) {
 
         return ResponseEntity.status(OK)
             .body(courseService.getById(course_id));
@@ -83,7 +84,8 @@ public class CourseController {
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
     @DeleteMapping("/{course_id}")
     public ResponseEntity<Void> deleteCourse(
-        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") final UUID course_id) {
+        @Parameter(description = "Course ID", required = true)
+        @PathVariable("course_id") final UUID course_id) {
 
         courseService.deleteCourse(course_id);
         return ResponseEntity.status(NO_CONTENT).build();
@@ -94,8 +96,10 @@ public class CourseController {
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString() and authentication.name == #course.authorId.toString())")
     @PutMapping("/{course_id}")
     public ResponseEntity<CourseDtoResponse> updateCourse(
-        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") final UUID course_id,
-        @Valid @RequestBody final CourseDtoRequest course) {
+        @Parameter(description = "Course ID", required = true)
+        @PathVariable("course_id") final UUID course_id,
+        @Valid
+        @RequestBody final CourseDtoRequest course) {
 
         return ResponseEntity.status(OK)
             .body(courseService.updateCourse(course_id, course));
@@ -109,7 +113,8 @@ public class CourseController {
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
     @GetMapping("/{course_id}/lessons")
     public ResponseEntity<List<LessonDtoResponse>> getAllLessonsByCourseId(
-        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") final UUID course_id) {
+        @Parameter(description = "Course ID", required = true)
+        @PathVariable("course_id") final UUID course_id) {
 
         return ResponseEntity.status(OK)
             .body(lessonService.getAllByCourseId(course_id));
@@ -122,8 +127,10 @@ public class CourseController {
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
     @PostMapping("/{course_id}/lessons")
     public ResponseEntity<LessonDtoResponse> createLesson(
-        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") final UUID course_id,
-        @Valid @RequestBody final LessonDtoRequest lesson) {
+        @Parameter(description = "Course ID", required = true)
+        @PathVariable("course_id") final UUID course_id,
+        @Valid
+        @RequestBody final LessonDtoRequest lesson) {
 
         return ResponseEntity.status(CREATED)
             .body(lessonService.createLesson(course_id, lesson));

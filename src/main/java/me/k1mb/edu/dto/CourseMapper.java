@@ -7,7 +7,7 @@ import org.mapstruct.*;
 
 import java.util.UUID;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CourseMapper {
     @Mapping(source = "authorId", target = "author.id")
     Course toEntity(CourseDtoRequest courseDtoRequest);
@@ -20,8 +20,6 @@ public interface CourseMapper {
     void partialUpdate(CourseDtoRequest courseDtoRequest, @MappingTarget Course course);
 
     default User createUser(@NonNull UUID authorId) {
-        User user = new User();
-        user.setId(authorId);
-        return user;
+        return new User().setId(authorId);
     }
 }

@@ -19,7 +19,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true)
-public class LessonServiceImpl implements LessonService {
+class LessonServiceImpl implements LessonService {
     LessonRepository lessonRepository;
     CourseRepository courseRepository;
     LessonMapper lessonMapper;
@@ -35,7 +35,8 @@ public class LessonServiceImpl implements LessonService {
         val course = courseRepository.findById(courseId)
             .orElseThrow(() -> new ResourceNotFoundException("Course not found %s".formatted(courseId)));
         val lessonEntity = lessonMapper.toEntity(lesson);
-        lessonEntity.setCourse(course);
-        return lessonMapper.toDto(lessonRepository.save(lessonEntity));
+        return lessonMapper.toDto(
+            lessonRepository.save(
+                lessonEntity.setCourse(course)));
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface LessonService {
-    List<LessonDtoResponse> getAllByCourseId(@NonNull final UUID courseId);
+    List<LessonDtoResponse> getAllByCourseId(@NonNull UUID courseId);
 
-    LessonDtoResponse createLesson(@NonNull final UUID courseId, @NonNull final LessonDtoRequest lesson);
+    LessonDtoResponse createLesson(@NonNull UUID courseId, @NonNull LessonDtoRequest lesson);
 }
