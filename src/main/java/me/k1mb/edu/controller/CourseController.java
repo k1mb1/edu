@@ -46,6 +46,7 @@ public class CourseController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<CourseDtoResponse>> getAll() {
+
         return ResponseEntity.status(HttpStatus.OK).body(courseService.getAll());
     }
 

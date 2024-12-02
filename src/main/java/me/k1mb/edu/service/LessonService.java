@@ -24,12 +24,14 @@ public class LessonService {
     LessonMapper lessonMapper;
 
     public List<LessonDtoResponse> getAllByCourseId(@NonNull UUID courseId) {
+
         return lessonRepository.findAllByCourseId(courseId).stream()
             .map(lessonMapper::toDto)
             .toList();
     }
 
     public LessonDtoResponse createLesson(@NonNull UUID courseId, @NonNull LessonDtoRequest lesson) {
+
         val course = courseRepository
             .findById(courseId)
             .orElseThrow(() -> new ResourceNotFoundException("Course not found %s".formatted(courseId)));

@@ -16,11 +16,11 @@ import java.util.UUID;
 public class User {
     @Id
     @Column(name = "id")
-    private UUID id;
+    UUID id;
 
     @Column(name = "username")
-    private String username;
+    String username;
 
     @Column(name = "email", unique = true)
-    private String email;
+    String email;
 }

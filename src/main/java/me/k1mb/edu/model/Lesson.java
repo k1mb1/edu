@@ -14,18 +14,18 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
-    private UUID id;
+    UUID id;
 
     @ManyToOne
     @JoinColumn(name = "course_id")
-    private Course course;
+    Course course;
 
     @Column(name = "title")
-    private String title;
+    String title;
 
     @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+    String description;
 
     @Column(name = "duration")
-    private Integer duration;
+    Integer duration;
 }

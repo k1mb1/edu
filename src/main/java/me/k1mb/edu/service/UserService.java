@@ -1,5 +1,6 @@
 package me.k1mb.edu.service;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
@@ -17,17 +18,19 @@ import java.util.UUID;
 public class UserService {
     UserRepository userRepository;
 
-    public User getById(UUID id) {
+    public User getById(@NonNull UUID id) {
+
         return userRepository
             .findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User not found %s".formatted(id)));
     }
 
-    public User create(User user) {
+    public User create(@NonNull User user) {
         return userRepository.save(user);
     }
 
-    public User createFromJwt(Jwt jwt) {
+    public User createFromJwt(@NonNull Jwt jwt) {
+
         var user = new User();
         val id = UUID.fromString(jwt.getClaim("sub"));
         if (userRepository.existsById(id)) {

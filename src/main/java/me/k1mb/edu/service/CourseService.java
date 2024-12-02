@@ -59,6 +59,7 @@ public class CourseService {
     }
 
     public UUID checkAuthor(@NonNull UUID course_id) {
+
         return courseRepository.findById(course_id).
             map(Course::getAuthor).
             map(User::getId).
