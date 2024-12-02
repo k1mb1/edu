@@ -16,7 +16,7 @@ public interface CourseMapper {
     CourseDtoResponse toDto(Course course);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(source = "authorId", target = "author")
+    @Mapping(source = "authorId", target = "author.id")
     void partialUpdate(CourseDtoRequest courseDtoRequest, @MappingTarget Course course);
 
     default User createUser(@NonNull UUID authorId) {

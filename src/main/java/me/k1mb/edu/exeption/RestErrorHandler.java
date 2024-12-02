@@ -1,7 +1,6 @@
 package me.k1mb.edu.exeption;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,6 +9,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.time.LocalDateTime;
 
+import static org.springframework.http.HttpStatus.*;
+
 @ControllerAdvice
 public class RestErrorHandler {
 
@@ -17,11 +18,11 @@ public class RestErrorHandler {
     public ResponseEntity<ErrorMessage> handleException(Exception ex, HttpServletRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(
             LocalDateTime.now(),
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            HttpStatus.INTERNAL_SERVER_ERROR.name(),
+            INTERNAL_SERVER_ERROR.value(),
+            INTERNAL_SERVER_ERROR.name(),
             ex.getMessage(),
             request.getRequestURI());
-        return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorMessage, INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -29,11 +30,11 @@ public class RestErrorHandler {
         ResourceNotFoundException ex, HttpServletRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(
             LocalDateTime.now(),
-            HttpStatus.NOT_FOUND.value(),
-            HttpStatus.NOT_FOUND.name(),
+            NOT_FOUND.value(),
+            NOT_FOUND.name(),
             ex.getMessage(),
             request.getRequestURI());
-        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorMessage, NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -41,23 +42,22 @@ public class RestErrorHandler {
         MethodArgumentNotValidException ex, HttpServletRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(
             LocalDateTime.now(),
-            HttpStatus.BAD_REQUEST.value(),
-            HttpStatus.BAD_REQUEST.name(),
+            BAD_REQUEST.value(),
+            BAD_REQUEST.name(),
             ex.getMessage(),
             request.getRequestURI());
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMessage, BAD_REQUEST);
     }
 
-    // MethodArgumentTypeMismatchException
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorMessage> handleMethodArgumentTypeMismatchException(
         MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(
             LocalDateTime.now(),
-            HttpStatus.BAD_REQUEST.value(),
-            HttpStatus.BAD_REQUEST.name(),
+            BAD_REQUEST.value(),
+            BAD_REQUEST.name(),
             ex.getMessage(),
             request.getRequestURI());
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMessage, BAD_REQUEST);
     }
 }

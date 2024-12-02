@@ -17,13 +17,14 @@ import me.k1mb.edu.dto.LessonDtoResponse;
 import me.k1mb.edu.exeption.ErrorMessage;
 import me.k1mb.edu.service.CourseService;
 import me.k1mb.edu.service.LessonService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,8 +47,8 @@ public class CourseController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<CourseDtoResponse>> getAll() {
-
-        return ResponseEntity.status(HttpStatus.OK).body(courseService.getAll());
+        return ResponseEntity.status(OK)
+            .body(courseService.getAll());
     }
 
     @Operation(summary = "Get course details", description = "Returns details of a specific course by its ID.")
@@ -55,21 +56,23 @@ public class CourseController {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved course details"),
         @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseService.checkAuthor(#course_id).toString())")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
     @GetMapping("/{course_id}")
     public ResponseEntity<CourseDtoResponse> getById(
-        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") UUID course_id) {
+        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") final UUID course_id) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(courseService.getById(course_id));
+        return ResponseEntity.status(OK)
+            .body(courseService.getById(course_id));
     }
 
     @Operation(summary = "Create a new course", description = "Creates a new course with the specified parameters.")
     @ApiResponse(responseCode = "201", description = "Successfully created the course")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == #course.authorId.toString())")
     @PostMapping
-    public ResponseEntity<CourseDtoResponse> createCourse(@Valid @RequestBody CourseDtoRequest course) {
+    public ResponseEntity<CourseDtoResponse> createCourse(@Valid @RequestBody final CourseDtoRequest course) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(courseService.createCourse(course));
+        return ResponseEntity.status(CREATED)
+            .body(courseService.createCourse(course));
     }
 
     @Operation(summary = "Delete a course", description = "Delete a specific course by its ID")
@@ -77,24 +80,25 @@ public class CourseController {
         @ApiResponse(responseCode = "204", description = "Course successfully deleted"),
         @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseService.checkAuthor(#course_id).toString())")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
     @DeleteMapping("/{course_id}")
     public ResponseEntity<Void> deleteCourse(
-        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") UUID course_id) {
+        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") final UUID course_id) {
 
         courseService.deleteCourse(course_id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 
     @Operation(summary = "Update an existing course", description = "Update an existing course with the provided details")
     @ApiResponse(responseCode = "200", description = "Course successfully updated")
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseService.checkAuthor(#course_id).toString() and authentication.name == #course.authorId.toString())")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString() and authentication.name == #course.authorId.toString())")
     @PutMapping("/{course_id}")
     public ResponseEntity<CourseDtoResponse> updateCourse(
-        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") UUID course_id,
-        @Valid @RequestBody CourseDtoRequest course) {
+        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") final UUID course_id,
+        @Valid @RequestBody final CourseDtoRequest course) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(courseService.updateCourse(course_id, course));
+        return ResponseEntity.status(OK)
+            .body(courseService.updateCourse(course_id, course));
     }
 
     @Operation(summary = "Get all lessons by course ID", description = "Retrieve a list of all lessons for a specific course")
@@ -102,22 +106,26 @@ public class CourseController {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of lessons"),
         @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseService.checkAuthor(#course_id).toString())")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
     @GetMapping("/{course_id}/lessons")
     public ResponseEntity<List<LessonDtoResponse>> getAllLessonsByCourseId(
-        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") UUID course_id) {
+        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") final UUID course_id) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(lessonService.getAllByCourseId(course_id));
+        return ResponseEntity.status(OK)
+            .body(lessonService.getAllByCourseId(course_id));
     }
 
     @Operation(summary = "Create a new lesson for a course", description = "Create a new lesson for a specific course")
-    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Lesson successfully created"), @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseService.checkAuthor(#course_id).toString())")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Lesson successfully created"),
+        @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
     @PostMapping("/{course_id}/lessons")
     public ResponseEntity<LessonDtoResponse> createLesson(
-        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") UUID course_id,
-        @Valid @RequestBody LessonDtoRequest lesson) {
+        @Parameter(description = "Course ID", required = true) @PathVariable("course_id") final UUID course_id,
+        @Valid @RequestBody final LessonDtoRequest lesson) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(lessonService.createLesson(course_id, lesson));
+        return ResponseEntity.status(CREATED)
+            .body(lessonService.createLesson(course_id, lesson));
     }
 }

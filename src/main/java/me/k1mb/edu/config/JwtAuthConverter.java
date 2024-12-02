@@ -1,6 +1,7 @@
 package me.k1mb.edu.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.val;
 import me.k1mb.edu.service.UserService;
 import org.springframework.core.convert.converter.Converter;
@@ -20,17 +21,17 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
 @Component
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true)
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-
-    private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-
-    private final UserService userService;
+    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+    UserService userService;
 
     @Override
-    public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
+    public AbstractAuthenticationToken convert(@NonNull final Jwt jwt) {
         val authorities = Stream.concat(
                 jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
                 extractResourceRoles(jwt).stream())
@@ -39,14 +40,10 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         val user = userService.createFromJwt(jwt);
         // temporary registration user for association not in keycloak -> TODO: registration and authorization
 
-        return new JwtAuthenticationToken(jwt, authorities, getPrincipleClaimName(jwt));
+        return new JwtAuthenticationToken(jwt, authorities, jwt.getSubject());
     }
 
-    private String getPrincipleClaimName(@NonNull Jwt jwt) {
-        return jwt.getSubject();
-    }
-
-    private Collection<? extends GrantedAuthority> extractResourceRoles(@NonNull Jwt jwt) {
+    private Collection<? extends GrantedAuthority> extractResourceRoles(@NonNull final Jwt jwt) {
         Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
         if (resourceAccess == null) {
             return Set.of();
@@ -59,6 +56,6 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         }
         return resource.get("roles").stream()
             .map(SimpleGrantedAuthority::new)
-            .collect(toSet());
+            .collect(toUnmodifiableSet());
     }
 }
