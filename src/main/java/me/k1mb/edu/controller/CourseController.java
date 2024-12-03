@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static me.k1mb.edu.utils.AuthorizationType.*;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -33,8 +34,7 @@ import static org.springframework.http.HttpStatus.*;
 @ApiResponses(value = {
     @ApiResponse(responseCode = "400", description = "Bad Request",
         content = @Content(schema = @Schema(implementation = ErrorMessage.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized",
-        content = @Content(schema = @Schema(implementation = ErrorMessage.class))),
+    @ApiResponse(responseCode = "401", description = "Unauthorized"),
     @ApiResponse(responseCode = "403", description = "Forbidden",
         content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
 @Tag(name = "Courses", description = "API for managing courses")
@@ -44,7 +44,7 @@ public class CourseController {
 
     @Operation(summary = "Get a list of all courses", description = "Returns a list of all available courses.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of courses")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize(ROLE_ADMIN)
     @GetMapping
     public ResponseEntity<List<CourseDtoResponse>> getAll() {
         return ResponseEntity.status(OK)
@@ -56,7 +56,7 @@ public class CourseController {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved course details"),
         @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
+    @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
     @GetMapping("/{course_id}")
     public ResponseEntity<CourseDtoResponse> getById(
         @Parameter(description = "Course ID", required = true)
@@ -68,7 +68,7 @@ public class CourseController {
 
     @Operation(summary = "Create a new course", description = "Creates a new course with the specified parameters.")
     @ApiResponse(responseCode = "201", description = "Successfully created the course")
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == #course.authorId.toString())")
+    @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + IS_AUTHOR)
     @PostMapping
     public ResponseEntity<CourseDtoResponse> createCourse(@Valid @RequestBody final CourseDtoRequest course) {
 
@@ -81,7 +81,7 @@ public class CourseController {
         @ApiResponse(responseCode = "204", description = "Course successfully deleted"),
         @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
+    @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
     @DeleteMapping("/{course_id}")
     public ResponseEntity<Void> deleteCourse(
         @Parameter(description = "Course ID", required = true)
@@ -93,7 +93,7 @@ public class CourseController {
 
     @Operation(summary = "Update an existing course", description = "Update an existing course with the provided details")
     @ApiResponse(responseCode = "200", description = "Course successfully updated")
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString() and authentication.name == #course.authorId.toString())")
+    @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR + AND + IS_AUTHOR)
     @PutMapping("/{course_id}")
     public ResponseEntity<CourseDtoResponse> updateCourse(
         @Parameter(description = "Course ID", required = true)
@@ -110,7 +110,7 @@ public class CourseController {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of lessons"),
         @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
+    @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
     @GetMapping("/{course_id}/lessons")
     public ResponseEntity<List<LessonDtoResponse>> getAllLessonsByCourseId(
         @Parameter(description = "Course ID", required = true)
@@ -123,8 +123,9 @@ public class CourseController {
     @Operation(summary = "Create a new lesson for a course", description = "Create a new lesson for a specific course")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Lesson successfully created"),
-        @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and authentication.name == @courseServiceImpl.checkAuthor(#course_id).toString())")
+        @ApiResponse(responseCode = "404", description = "Not found",
+            content = @Content(schema = @Schema(implementation = ErrorMessage.class)))})
+    @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
     @PostMapping("/{course_id}/lessons")
     public ResponseEntity<LessonDtoResponse> createLesson(
         @Parameter(description = "Course ID", required = true)

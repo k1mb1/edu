@@ -44,15 +44,13 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
 
     private Collection<? extends GrantedAuthority> extractResourceRoles(@NonNull final Jwt jwt) {
         Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
-        if (resourceAccess == null) {
+        if (resourceAccess == null)
             return Set.of();
-        }
 
         var resource = (Map<String, List<String>>) resourceAccess.get("edu-client");
-
-        if (resource == null) {
+        if (resource == null)
             return Set.of();
-        }
+
         return resource.get("roles").stream()
             .map(SimpleGrantedAuthority::new)
             .collect(toUnmodifiableSet());

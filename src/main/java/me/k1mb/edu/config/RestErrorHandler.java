@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import me.k1mb.edu.exeption.ErrorMessage;
 import me.k1mb.edu.exeption.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -61,5 +62,17 @@ public class RestErrorHandler {
             ex.getMessage(),
             request.getRequestURI());
         return new ResponseEntity<>(errorMessage, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorMessage> handleMethodAccessDeniedException(
+        AccessDeniedException ex, HttpServletRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(
+            LocalDateTime.now(),
+            FORBIDDEN.value(),
+            FORBIDDEN.name(),
+            ex.getMessage(),
+            request.getRequestURI());
+        return new ResponseEntity<>(errorMessage, FORBIDDEN);
     }
 }
