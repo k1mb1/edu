@@ -93,8 +93,8 @@ public class CourseControllerTest {
 
     @Test
     public void getByIdException() {
-        doThrow(new ResourceNotFoundException("Course not found %s".formatted(courseId))).when(courseService).getById(
-            courseId);
+        doThrow(new ResourceNotFoundException("Course not found %s".formatted(courseId)))
+            .when(courseService).getById(courseId);
 
         assertThrows(ResourceNotFoundException.class, () -> courseController.getById(courseId));
         verify(courseService).getById(courseId);
@@ -115,8 +115,8 @@ public class CourseControllerTest {
 
     @Test
     public void deleteCourseException() {
-        doThrow(new ResourceNotFoundException("Course not found %s".formatted(courseId))).when(courseService).deleteCourse(
-            courseId);
+        doThrow(new ResourceNotFoundException("Course not found %s".formatted(courseId)))
+            .when(courseService).deleteCourse(courseId);
 
         assertThrows(ResourceNotFoundException.class, () -> courseController.deleteCourse(courseId));
         verify(courseService).deleteCourse(courseId);
@@ -137,11 +137,10 @@ public class CourseControllerTest {
 
     @Test
     public void updateCourseException() {
-        doThrow(new ResourceNotFoundException("Course not found %s".formatted(courseId))).when(courseService).updateCourse(
-            courseId,
-            courseDtoRequest);
+        doThrow(new ResourceNotFoundException("Course not found %s".formatted(courseId)))
+            .when(courseService).updateCourse(courseId, courseDtoRequest);
 
-        assertThrows(ResourceNotFoundException.class, () -> courseController.deleteCourse(courseId));
+        assertThrows(ResourceNotFoundException.class, () -> courseController.updateCourse(courseId, courseDtoRequest));
         verify(courseService).updateCourse(courseId, courseDtoRequest);
     }
 
