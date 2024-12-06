@@ -1,5 +1,6 @@
 package me.k1mb.edu.controller;
 
+import lombok.val;
 import me.k1mb.edu.dto.CourseDtoRequest;
 import me.k1mb.edu.dto.CourseDtoResponse;
 import me.k1mb.edu.dto.LessonDtoRequest;
@@ -54,7 +55,7 @@ class CourseControllerTest {
 
     @Test
     public void getAll() {
-        var expectedCourses = List.of(courseDtoResponse);
+        val expectedCourses = List.of(courseDtoResponse);
         doReturn(expectedCourses).when(courseService).getAll();
 
         ResponseEntity<List<CourseDtoResponse>> response = courseController.getAll();
@@ -70,7 +71,7 @@ class CourseControllerTest {
     public void createCourse() {
         doReturn(courseDtoResponse).when(courseService).createCourse(courseDtoRequest);
 
-        var response = courseController.createCourse(courseDtoRequest);
+        val response = courseController.createCourse(courseDtoRequest);
 
         assertThat(response)
             .isNotNull()
@@ -83,7 +84,7 @@ class CourseControllerTest {
     public void getById() {
         doReturn(courseDtoResponse).when(courseService).getById(courseId);
 
-        var response = courseController.getById(courseId);
+        val response = courseController.getById(courseId);
 
         assertThat(response)
             .isNotNull()
@@ -105,7 +106,7 @@ class CourseControllerTest {
     public void deleteCourse() {
         doNothing().when(courseService).deleteCourse(courseId);
 
-        ResponseEntity<Void> response = courseController.deleteCourse(courseId);
+        val response = courseController.deleteCourse(courseId);
 
         assertThat(response)
             .isNotNull()
@@ -127,7 +128,7 @@ class CourseControllerTest {
     public void updateCourse() {
         doReturn(courseDtoResponse).when(courseService).updateCourse(courseId, courseDtoRequest);
 
-        var response = courseController.updateCourse(courseId, courseDtoRequest);
+        val response = courseController.updateCourse(courseId, courseDtoRequest);
 
         assertThat(response)
             .isNotNull()
@@ -147,10 +148,10 @@ class CourseControllerTest {
 
     @Test
     public void getAllLessonsByCourseId() {
-        var list = List.of(lessonDtoResponse);
+        val list = List.of(lessonDtoResponse);
         doReturn(list).when(lessonService).getAllByCourseId(courseId);
 
-        ResponseEntity<List<LessonDtoResponse>> response = courseController.getAllLessonsByCourseId(courseId);
+        val response = courseController.getAllLessonsByCourseId(courseId);
 
         assertThat(response)
             .isNotNull()
@@ -163,7 +164,7 @@ class CourseControllerTest {
     public void createLesson() {
         doReturn(lessonDtoResponse).when(lessonService).createLesson(courseId, lessonDtoRequest);
 
-        ResponseEntity<LessonDtoResponse> response = courseController.createLesson(courseId, lessonDtoRequest);
+        val response = courseController.createLesson(courseId, lessonDtoRequest);
 
         assertThat(response)
             .isNotNull()
