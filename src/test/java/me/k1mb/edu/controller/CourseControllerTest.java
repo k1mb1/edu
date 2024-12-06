@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -26,12 +27,12 @@ import static org.springframework.http.HttpStatus.*;
  * Test class for the {@link CourseController}
  */
 @ExtendWith(MockitoExtension.class)
-public class CourseControllerTest {
+class CourseControllerTest {
 
-    final UUID courseId = UUID.randomUUID();
+    final UUID courseId = randomUUID();
     final CourseDtoRequest courseDtoRequest = new CourseDtoRequest("title1", "description1", courseId);
     final CourseDtoResponse courseDtoResponse = new CourseDtoResponse(
-        UUID.randomUUID(),
+        randomUUID(),
         "title1",
         "description1",
         courseId,
@@ -39,7 +40,7 @@ public class CourseControllerTest {
         null);
     final LessonDtoRequest lessonDtoRequest = new LessonDtoRequest(courseId, "title1", "description1", 10);
     final LessonDtoResponse lessonDtoResponse = new LessonDtoResponse(
-        UUID.randomUUID(),
+        randomUUID(),
         courseId,
         "title1",
         "description1",
