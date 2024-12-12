@@ -3,9 +3,9 @@ package me.k1mb.edu.dto;
 import java.util.UUID;
 
 /**
- * DTO for {@link me.k1mb.edu.model.Lesson}
+ * DTO response для {@link me.k1mb.edu.model.Lesson}
  */
-public record LessonDtoResponse(
+public record LessonResponse(
     UUID id,
     UUID courseId,
     String title,

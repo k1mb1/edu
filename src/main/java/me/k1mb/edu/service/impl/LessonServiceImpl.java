@@ -4,8 +4,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import me.k1mb.edu.dto.LessonDtoRequest;
-import me.k1mb.edu.dto.LessonDtoResponse;
+import me.k1mb.edu.dto.LessonRequest;
+import me.k1mb.edu.dto.LessonResponse;
 import me.k1mb.edu.mapper.LessonMapper;
 import me.k1mb.edu.exception.ResourceNotFoundException;
 import me.k1mb.edu.repository.CourseRepository;
@@ -24,13 +24,13 @@ class LessonServiceImpl implements LessonService {
     CourseRepository courseRepository;
     LessonMapper lessonMapper;
 
-    public List<LessonDtoResponse> getAllByCourseId(@NonNull final UUID courseId) {
+    public List<LessonResponse> getAllByCourseId(@NonNull final UUID courseId) {
         return lessonRepository.findAllByCourseId(courseId).stream()
             .map(lessonMapper::toDto)
             .toList();
     }
 
-    public LessonDtoResponse createLesson(@NonNull final UUID courseId, @NonNull final LessonDtoRequest lesson) {
+    public LessonResponse createLesson(@NonNull final UUID courseId, @NonNull final LessonRequest lesson) {
 
         val course = courseRepository.findById(courseId)
             .orElseThrow(() -> new ResourceNotFoundException("Course not found %s".formatted(courseId)));

@@ -7,9 +7,9 @@ import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 /**
- * DTO for {@link me.k1mb.edu.model.Course}
+ * DTO request для {@link me.k1mb.edu.model.Course}
  */
-public record CourseDtoRequest(
+public record CourseRequest(
     @NotBlank @Size(max = 255) String title,
     @NotBlank String description,
     @NotNull UUID authorId) {

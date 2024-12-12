@@ -3,8 +3,8 @@ package me.k1mb.edu.service.impl;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import me.k1mb.edu.dto.CourseDtoRequest;
-import me.k1mb.edu.dto.CourseDtoResponse;
+import me.k1mb.edu.dto.CourseRequest;
+import me.k1mb.edu.dto.CourseResponse;
 import me.k1mb.edu.mapper.CourseMapper;
 import me.k1mb.edu.exception.ResourceNotFoundException;
 import me.k1mb.edu.model.Course;
@@ -25,23 +25,23 @@ class CourseServiceImpl implements CourseService {
 
     static String COURSE_NOT_FOUND = "Course not found %s";
 
-    public List<CourseDtoResponse> getAll() {
+    public List<CourseResponse> getAll() {
         return courseRepository.findAll().stream()
             .map(courseMapper::toDto)
             .toList();
     }
 
-    public CourseDtoResponse getById(@NonNull final UUID id) {
+    public CourseResponse getById(@NonNull final UUID id) {
         return courseRepository.findById(id)
             .map(courseMapper::toDto)
             .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.formatted(id)));
     }
 
-    public CourseDtoResponse createCourse(@NonNull final CourseDtoRequest course) {
+    public CourseResponse createCourse(@NonNull final CourseRequest course) {
         return courseMapper.toDto(courseRepository.save(courseMapper.toEntity(course)));
     }
 
-    public CourseDtoResponse updateCourse(@NonNull final UUID id, @NonNull final CourseDtoRequest course) {
+    public CourseResponse updateCourse(@NonNull final UUID id, @NonNull final CourseRequest course) {
 
         var courseEntity = courseRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.formatted(id)));

@@ -1,20 +1,20 @@
 package me.k1mb.edu.service;
 
 import lombok.NonNull;
-import me.k1mb.edu.dto.CourseDtoRequest;
-import me.k1mb.edu.dto.CourseDtoResponse;
+import me.k1mb.edu.dto.CourseRequest;
+import me.k1mb.edu.dto.CourseResponse;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface CourseService {
-    List<CourseDtoResponse> getAll();
+    List<CourseResponse> getAll();
 
-    CourseDtoResponse getById(@NonNull UUID id);
+    CourseResponse getById(@NonNull UUID id);
 
-    CourseDtoResponse createCourse(@NonNull CourseDtoRequest course);
+    CourseResponse createCourse(@NonNull CourseRequest course);
 
-    CourseDtoResponse updateCourse(@NonNull UUID id, @NonNull CourseDtoRequest course);
+    CourseResponse updateCourse(@NonNull UUID id, @NonNull CourseRequest course);
 
     void deleteCourse(@NonNull UUID id);
 

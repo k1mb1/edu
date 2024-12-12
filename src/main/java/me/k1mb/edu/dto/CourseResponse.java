@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * DTO for {@link me.k1mb.edu.model.Course}
+ * DTO response для {@link me.k1mb.edu.model.Course}
  */
-public record CourseDtoResponse(
+public record CourseResponse(
     UUID id,
     String title,
     String description,

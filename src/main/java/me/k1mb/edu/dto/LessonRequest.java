@@ -7,9 +7,9 @@ import jakarta.validation.constraints.Positive;
 import java.util.UUID;
 
 /**
- * DTO for {@link me.k1mb.edu.model.Lesson}
+ * DTO request для {@link me.k1mb.edu.model.Lesson}
  */
-public record LessonDtoRequest(
+public record LessonRequest(
     @NotNull UUID courseId,
     @NotBlank String title,
     @NotBlank String description,

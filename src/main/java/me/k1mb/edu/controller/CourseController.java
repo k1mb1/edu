@@ -26,102 +26,102 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true)
 @RequestMapping(value = "/api/v1/courses", produces = "application/json")
-@ApiResponse(responseCode = "400", description = "Bad Request",
+@ApiResponse(responseCode = "400", description = "Неверный запрос",
     content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
-@ApiResponse(responseCode = "401", description = "Unauthorized")
-@ApiResponse(responseCode = "403", description = "Forbidden",
+@ApiResponse(responseCode = "401", description = "Неавторизован")
+@ApiResponse(responseCode = "403", description = "Запрещено",
     content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
-@Tag(name = "Courses", description = "API for managing courses")
+@Tag(name = "Курсы", description = "API для управления курсами")
 public class CourseController {
     CourseService courseService;
     LessonService lessonService;
 
-    @Operation(summary = "Get a list of all courses", description = "Returns a list of all available courses.")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of courses")
+    @Operation(summary = "Получить список всех курсов", description = "Возвращает список всех доступных курсов.")
+    @ApiResponse(responseCode = "200", description = "Список курсов успешно получен")
     @PreAuthorize(ROLE_ADMIN)
     @GetMapping
-    public ResponseEntity<List<CourseDtoResponse>> getAll() {
+    public ResponseEntity<List<CourseResponse>> getAll() {
         return ResponseEntity.status(OK)
             .body(courseService.getAll());
     }
 
-    @Operation(summary = "Get course details", description = "Returns details of a specific course by its ID.")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved course details")
-    @ApiResponse(responseCode = "404", description = "Not found",
+    @Operation(summary = "Получить детали курса", description = "Возвращает детали конкретного курса по его ID.")
+    @ApiResponse(responseCode = "200", description = "Детали курса успешно получены")
+    @ApiResponse(responseCode = "404", description = "Не найдено",
         content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
     @GetMapping("/{course_id}")
-    public ResponseEntity<CourseDtoResponse> getById(
-        @Parameter(description = "Course ID", required = true)
+    public ResponseEntity<CourseResponse> getById(
+        @Parameter(description = "ID курса", required = true)
         @PathVariable("course_id") final UUID course_id) {
 
         return ResponseEntity.status(OK)
             .body(courseService.getById(course_id));
     }
 
-    @Operation(summary = "Create a new course", description = "Creates a new course with the specified parameters.")
-    @ApiResponse(responseCode = "201", description = "Successfully created the course")
+    @Operation(summary = "Создать новый курс", description = "Создает новый курс с указанными параметрами.")
+    @ApiResponse(responseCode = "201", description = "Курс успешно создан")
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + IS_AUTHOR)
     @PostMapping
-    public ResponseEntity<CourseDtoResponse> createCourse(@Valid @RequestBody final CourseDtoRequest course) {
+    public ResponseEntity<CourseResponse> createCourse(@Valid @RequestBody final CourseRequest course) {
 
         return ResponseEntity.status(CREATED)
             .body(courseService.createCourse(course));
     }
 
-    @Operation(summary = "Delete a course", description = "Delete a specific course by its ID")
-    @ApiResponse(responseCode = "204", description = "Course successfully deleted")
-    @ApiResponse(responseCode = "404", description = "Not found",
+    @Operation(summary = "Удалить курс", description = "Удаляет конкретный курс по его ID.")
+    @ApiResponse(responseCode = "204", description = "Курс успешно удален")
+    @ApiResponse(responseCode = "404", description = "Не найдено",
         content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
     @DeleteMapping("/{course_id}")
     public ResponseEntity<Void> deleteCourse(
-        @Parameter(description = "Course ID", required = true)
+        @Parameter(description = "ID курса", required = true)
         @PathVariable("course_id") final UUID course_id) {
 
         courseService.deleteCourse(course_id);
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
-    @Operation(summary = "Update an existing course", description = "Update an existing course with the provided details")
-    @ApiResponse(responseCode = "200", description = "Course successfully updated")
+    @Operation(summary = "Обновить существующий курс", description = "Обновляет существующий курс с предоставленными данными.")
+    @ApiResponse(responseCode = "200", description = "Курс успешно обновлен")
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR + AND + IS_AUTHOR)
     @PutMapping("/{course_id}")
-    public ResponseEntity<CourseDtoResponse> updateCourse(
-        @Parameter(description = "Course ID", required = true)
+    public ResponseEntity<CourseResponse> updateCourse(
+        @Parameter(description = "ID курса", required = true)
         @PathVariable("course_id") final UUID course_id,
         @Valid
-        @RequestBody final CourseDtoRequest course) {
+        @RequestBody final CourseRequest course) {
 
         return ResponseEntity.status(OK)
             .body(courseService.updateCourse(course_id, course));
     }
 
-    @Operation(summary = "Get all lessons by course ID", description = "Retrieve a list of all lessons for a specific course")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of lessons")
-    @ApiResponse(responseCode = "404", description = "Not found",
+    @Operation(summary = "Получить все уроки по ID курса", description = "Получает список всех уроков для конкретного курса.")
+    @ApiResponse(responseCode = "200", description = "Список уроков успешно получен")
+    @ApiResponse(responseCode = "404", description = "Не найдено",
         content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
     @GetMapping("/{course_id}/lessons")
-    public ResponseEntity<List<LessonDtoResponse>> getAllLessonsByCourseId(
-        @Parameter(description = "Course ID", required = true)
+    public ResponseEntity<List<LessonResponse>> getAllLessonsByCourseId(
+        @Parameter(description = "ID курса", required = true)
         @PathVariable("course_id") final UUID course_id) {
 
         return ResponseEntity.status(OK)
             .body(lessonService.getAllByCourseId(course_id));
     }
 
-    @Operation(summary = "Create a new lesson for a course", description = "Create a new lesson for a specific course")
-    @ApiResponse(responseCode = "201", description = "Lesson successfully created")
-    @ApiResponse(responseCode = "404", description = "Not found",
+    @Operation(summary = "Создать новый урок для курса", description = "Создает новый урок для конкретного курса.")
+    @ApiResponse(responseCode = "201", description = "Урок успешно создан")
+    @ApiResponse(responseCode = "404", description = "Не найдено",
         content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
     @PostMapping("/{course_id}/lessons")
-    public ResponseEntity<LessonDtoResponse> createLesson(
-        @Parameter(description = "Course ID", required = true)
+    public ResponseEntity<LessonResponse> createLesson(
+        @Parameter(description = "ID курса", required = true)
         @PathVariable("course_id") final UUID course_id,
         @Valid
-        @RequestBody final LessonDtoRequest lesson) {
+        @RequestBody final LessonRequest lesson) {
 
         return ResponseEntity.status(CREATED)
             .body(lessonService.createLesson(course_id, lesson));
