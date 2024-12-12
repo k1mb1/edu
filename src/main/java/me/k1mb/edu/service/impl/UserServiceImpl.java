@@ -3,7 +3,7 @@ package me.k1mb.edu.service.impl;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import me.k1mb.edu.exeption.ResourceNotFoundException;
+import me.k1mb.edu.exception.ResourceNotFoundException;
 import me.k1mb.edu.model.User;
 import me.k1mb.edu.repository.UserRepository;
 import me.k1mb.edu.service.UserService;
@@ -30,13 +30,12 @@ class UserServiceImpl implements UserService {
     public User createFromJwt(@NonNull final Jwt jwt) {
         val id = UUID.fromString(jwt.getClaim("sub"));
         if (userRepository.existsById(id)) {
-            return getById(id);// TODO: registration
+            return getById(id);// TODO: временная регистрация пользователей в контексте приложения
         }
 
-        return create(User.builder()
-            .id(id)
-            .username(jwt.getClaim("name"))
-            .email(jwt.getClaim("preferred_username"))
-            .build());
+        return create(new User()
+            .setId(id)
+            .setUsername(jwt.getClaim("name"))
+            .setEmail(jwt.getClaim("preferred_username")));
     }
 }

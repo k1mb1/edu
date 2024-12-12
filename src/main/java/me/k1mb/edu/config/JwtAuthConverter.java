@@ -37,7 +37,7 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
             .collect(toUnmodifiableSet());
 
         val user = userService.createFromJwt(jwt);
-        // TODO: registration user
+        // TODO: временная регистрация пользователей в контексте приложения
 
         return new JwtAuthenticationToken(jwt, authorities, jwt.getSubject());
     }

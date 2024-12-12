@@ -3,8 +3,8 @@ package me.k1mb.edu.service.impl;
 import lombok.val;
 import me.k1mb.edu.dto.CourseDtoRequest;
 import me.k1mb.edu.dto.CourseDtoResponse;
-import me.k1mb.edu.dto.CourseMapper;
-import me.k1mb.edu.exeption.ResourceNotFoundException;
+import me.k1mb.edu.exception.ResourceNotFoundException;
+import me.k1mb.edu.mapper.CourseMapper;
 import me.k1mb.edu.model.Course;
 import me.k1mb.edu.model.User;
 import me.k1mb.edu.repository.CourseRepository;
@@ -19,11 +19,12 @@ import java.util.List;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
- * Test class for the {@link CourseServiceImpl}
+ * Тестовый класс для {@link CourseServiceImpl}
  */
 @ExtendWith(MockitoExtension.class)
 class CourseServiceTest {
@@ -51,9 +52,12 @@ class CourseServiceTest {
 
         val result = courseService.getAll();
 
-        assertAll(
-            () -> assertEquals(1, result.size()),
-            () -> assertEquals(courseDtoResponse, result.getFirst()));
+        assertThat(result)
+            .isNotNull()
+            .hasSize(1)
+            .isEqualTo(List.of(courseDtoResponse));
+        verify(courseMapper).toDto(course);
+        verify(courseRepository).findAll();
     }
 
     @Test
@@ -63,7 +67,11 @@ class CourseServiceTest {
 
         val result = courseService.getById(course.getId());
 
-        assertEquals(courseDtoResponse, result);
+        assertThat(result)
+            .isNotNull()
+            .isEqualTo(courseDtoResponse);
+        verify(courseMapper).toDto(course);
+        verify(courseRepository).findById(course.getId());
     }
 
     @Test
@@ -71,7 +79,10 @@ class CourseServiceTest {
         val id = randomUUID();
         doReturn(empty()).when(courseRepository).findById(id);
 
-        assertThrows(ResourceNotFoundException.class, () -> courseService.getById(id));
+        assertThatThrownBy(() -> courseService.getById(id))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessage("Course not found %s".formatted(id));
+        verify(courseRepository).findById(id);
     }
 
     @Test
@@ -82,7 +93,12 @@ class CourseServiceTest {
 
         val result = courseService.createCourse(courseDtoRequest);
 
-        assertEquals(courseDtoResponse, result);
+        assertThat(result)
+            .isNotNull()
+            .isEqualTo(courseDtoResponse);
+        verify(courseMapper).toEntity(courseDtoRequest);
+        verify(courseRepository).save(course);
+        verify(courseMapper).toDto(course);
     }
 
     @Test
@@ -94,8 +110,13 @@ class CourseServiceTest {
 
         val result = courseService.updateCourse(course.getId(), courseDtoRequest);
 
-        assertEquals(courseDtoResponse, result);
+        assertThat(result)
+            .isNotNull()
+            .isEqualTo(courseDtoResponse);
+        verify(courseRepository).findById(course.getId());
         verify(courseMapper).partialUpdate(courseDtoRequest, course);
+        verify(courseRepository).save(course);
+        verify(courseMapper).toDto(course);
     }
 
     @Test
@@ -103,7 +124,10 @@ class CourseServiceTest {
         val id = randomUUID();
         doReturn(empty()).when(courseRepository).findById(id);
 
-        assertThrows(ResourceNotFoundException.class, () -> courseService.updateCourse(id, courseDtoRequest));
+        assertThatThrownBy(() -> courseService.updateCourse(id, courseDtoRequest))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessage("Course not found %s".formatted(id));
+        verify(courseRepository).findById(id);
     }
 
     @Test
@@ -118,9 +142,12 @@ class CourseServiceTest {
     @Test
     void testDeleteCourse_NotFound() {
         val id = randomUUID();
-        when(courseRepository.existsById(id)).thenReturn(false);
+        doReturn(false).when(courseRepository).existsById(id);
 
-        assertThrows(ResourceNotFoundException.class, () -> courseService.deleteCourse(id));
+        assertThatThrownBy(() -> courseService.deleteCourse(id))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessage("Course not found %s".formatted(id));
+        verify(courseRepository).existsById(id);
     }
 
     @Test
@@ -134,7 +161,10 @@ class CourseServiceTest {
 
         val result = courseService.checkAuthor(courseId);
 
-        assertEquals(authorId, result);
+        assertThat(result)
+            .isNotNull()
+            .isEqualTo(authorId);
+        verify(courseRepository).findById(courseId);
     }
 
     @Test
@@ -142,6 +172,9 @@ class CourseServiceTest {
         val courseId = randomUUID();
         doReturn(empty()).when(courseRepository).findById(courseId);
 
-        assertThrows(ResourceNotFoundException.class, () -> courseService.checkAuthor(courseId));
+        assertThatThrownBy(() -> courseService.checkAuthor(courseId))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessage("Course not found %s".formatted(courseId));
+        verify(courseRepository).findById(courseId);
     }
 }

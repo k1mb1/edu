@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.time.LocalDateTime;
+
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -25,8 +27,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         return http
-            .cors(AbstractHttpConfigurer::disable)//TODO: check
-            .csrf(AbstractHttpConfigurer::disable)//TODO: check
+            .cors(AbstractHttpConfigurer::disable)//TODO: Посмотреть подробнее
+            .csrf(AbstractHttpConfigurer::disable)//TODO: Посмотреть подробнее
             .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                 .requestMatchers(PUBLIC_ENDPOINTS)
                 .permitAll()

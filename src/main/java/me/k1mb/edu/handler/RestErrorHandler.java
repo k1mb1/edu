@@ -1,8 +1,8 @@
-package me.k1mb.edu.config;
+package me.k1mb.edu.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
-import me.k1mb.edu.exeption.ErrorMessage;
-import me.k1mb.edu.exeption.ResourceNotFoundException;
+import me.k1mb.edu.dto.ErrorMessage;
+import me.k1mb.edu.exception.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

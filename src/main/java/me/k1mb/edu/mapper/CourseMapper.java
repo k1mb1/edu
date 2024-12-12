@@ -1,6 +1,8 @@
-package me.k1mb.edu.dto;
+package me.k1mb.edu.mapper;
 
 import lombok.NonNull;
+import me.k1mb.edu.dto.CourseDtoRequest;
+import me.k1mb.edu.dto.CourseDtoResponse;
 import me.k1mb.edu.model.Course;
 import me.k1mb.edu.model.User;
 import org.mapstruct.*;

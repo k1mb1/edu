@@ -1,4 +1,4 @@
-package me.k1mb.edu.exeption;
+package me.k1mb.edu.dto;
 
 import java.time.LocalDateTime;
 

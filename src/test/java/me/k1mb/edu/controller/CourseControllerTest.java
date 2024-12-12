@@ -5,7 +5,7 @@ import me.k1mb.edu.dto.CourseDtoRequest;
 import me.k1mb.edu.dto.CourseDtoResponse;
 import me.k1mb.edu.dto.LessonDtoRequest;
 import me.k1mb.edu.dto.LessonDtoResponse;
-import me.k1mb.edu.exeption.ResourceNotFoundException;
+import me.k1mb.edu.exception.ResourceNotFoundException;
 import me.k1mb.edu.service.CourseService;
 import me.k1mb.edu.service.LessonService;
 import org.junit.jupiter.api.Test;
@@ -20,12 +20,12 @@ import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.*;
 
 /**
- * Test class for the {@link CourseController}
+ * Тестовый класс для {@link CourseController}
  */
 @ExtendWith(MockitoExtension.class)
 class CourseControllerTest {
@@ -54,7 +54,7 @@ class CourseControllerTest {
     CourseController courseController;
 
     @Test
-    public void getAll() {
+    void getAll() {
         val expectedCourses = List.of(courseDtoResponse);
         doReturn(expectedCourses).when(courseService).getAll();
 
@@ -68,7 +68,7 @@ class CourseControllerTest {
     }
 
     @Test
-    public void createCourse() {
+    void createCourse() {
         doReturn(courseDtoResponse).when(courseService).createCourse(courseDtoRequest);
 
         val response = courseController.createCourse(courseDtoRequest);
@@ -81,7 +81,7 @@ class CourseControllerTest {
     }
 
     @Test
-    public void getById() {
+    void getById() {
         doReturn(courseDtoResponse).when(courseService).getById(courseId);
 
         val response = courseController.getById(courseId);
@@ -94,38 +94,43 @@ class CourseControllerTest {
     }
 
     @Test
-    public void getByIdException() {
-        doThrow(new ResourceNotFoundException("Course not found %s".formatted(courseId)))
+    void getByIdException() {
+        val message = "Course not found %s".formatted(courseId);
+        doThrow(new ResourceNotFoundException(message))
             .when(courseService).getById(courseId);
 
-        assertThrows(ResourceNotFoundException.class, () -> courseController.getById(courseId));
+        assertThatThrownBy(() -> courseController.getById(courseId))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessage(message);
         verify(courseService).getById(courseId);
     }
 
     @Test
-    public void deleteCourse() {
+    void deleteCourse() {
         doNothing().when(courseService).deleteCourse(courseId);
 
         val response = courseController.deleteCourse(courseId);
 
-        assertThat(response)
-            .isNotNull()
+        assertThat(response).isNotNull()
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(null, NO_CONTENT);
         verify(courseService).deleteCourse(courseId);
     }
 
     @Test
-    public void deleteCourseException() {
-        doThrow(new ResourceNotFoundException("Course not found %s".formatted(courseId)))
+    void deleteCourseException() {
+        val message = "Course not found %s".formatted(courseId);
+        doThrow(new ResourceNotFoundException(message))
             .when(courseService).deleteCourse(courseId);
 
-        assertThrows(ResourceNotFoundException.class, () -> courseController.deleteCourse(courseId));
+        assertThatThrownBy(() -> courseController.deleteCourse(courseId))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessage(message);
         verify(courseService).deleteCourse(courseId);
     }
 
     @Test
-    public void updateCourse() {
+    void updateCourse() {
         doReturn(courseDtoResponse).when(courseService).updateCourse(courseId, courseDtoRequest);
 
         val response = courseController.updateCourse(courseId, courseDtoRequest);
@@ -138,30 +143,32 @@ class CourseControllerTest {
     }
 
     @Test
-    public void updateCourseException() {
-        doThrow(new ResourceNotFoundException("Course not found %s".formatted(courseId)))
-            .when(courseService).updateCourse(courseId, courseDtoRequest);
+    void updateCourseException() {
+        val message = "Course not found %s".formatted(courseId);
+        doThrow(new ResourceNotFoundException(message)).when(courseService)
+            .updateCourse(courseId, courseDtoRequest);
 
-        assertThrows(ResourceNotFoundException.class, () -> courseController.updateCourse(courseId, courseDtoRequest));
+        assertThatThrownBy(() -> courseController.updateCourse(courseId, courseDtoRequest))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessage(message);
         verify(courseService).updateCourse(courseId, courseDtoRequest);
     }
 
     @Test
-    public void getAllLessonsByCourseId() {
+    void getAllLessonsByCourseId() {
         val list = List.of(lessonDtoResponse);
         doReturn(list).when(lessonService).getAllByCourseId(courseId);
 
         val response = courseController.getAllLessonsByCourseId(courseId);
 
-        assertThat(response)
-            .isNotNull()
-            .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
-            .containsExactly(list, OK);
+        assertThat(response).isNotNull().extracting(
+            ResponseEntity::getBody,
+            ResponseEntity::getStatusCode).containsExactly(list, OK);
         verify(lessonService).getAllByCourseId(courseId);
     }
 
     @Test
-    public void createLesson() {
+    void createLesson() {
         doReturn(lessonDtoResponse).when(lessonService).createLesson(courseId, lessonDtoRequest);
 
         val response = courseController.createLesson(courseId, lessonDtoRequest);
