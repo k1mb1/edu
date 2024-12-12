@@ -1,11 +1,10 @@
 package me.k1mb.edu.controller;
 
 import lombok.val;
-import me.k1mb.edu.dto.CourseRequest;
-import me.k1mb.edu.dto.CourseResponse;
-import me.k1mb.edu.dto.LessonRequest;
-import me.k1mb.edu.dto.LessonResponse;
+import me.k1mb.edu.dto.*;
 import me.k1mb.edu.exception.ResourceNotFoundException;
+import me.k1mb.edu.mapper.CourseMapper;
+import me.k1mb.edu.model.Course;
 import me.k1mb.edu.service.CourseService;
 import me.k1mb.edu.service.LessonService;
 import org.junit.jupiter.api.Test;
@@ -31,23 +30,38 @@ import static org.springframework.http.HttpStatus.*;
 class CourseControllerTest {
 
     final UUID courseId = randomUUID();
-    final CourseRequest courseRequest = new CourseRequest("title1", "description1", courseId);
+    final Course course = new Course().setId(randomUUID());
     final CourseResponse courseResponse = new CourseResponse(
         randomUUID(),
-        "title1",
-        "description1",
+        "title",
+        "description",
         courseId,
         null,
         null);
-    final LessonRequest lessonRequest = new LessonRequest(courseId, "title1", "description1", 10);
-    final LessonResponse lessonResponse = new LessonResponse(
+    final CourseRequest courseRequest = new CourseRequest("title", "description", courseId);
+    final CourseDto courseDto = new CourseDto(
         randomUUID(),
+        "title",
+        "description",
         courseId,
+        null,
+        null);
+    final LessonRequest lessonRequest = new LessonRequest(
+        course.getId(),
         "title1",
         "description1",
         10);
+    final LessonResponse lessonResponse = new LessonResponse(
+        randomUUID(),
+        course.getId(),
+        "title1",
+        "description1",
+        10);
+
     @Mock
     CourseService courseService;
+    @Mock
+    CourseMapper courseMapper;
     @Mock
     LessonService lessonService;
     @InjectMocks
@@ -55,21 +69,25 @@ class CourseControllerTest {
 
     @Test
     void getAll() {
-        val expectedCourses = List.of(courseResponse);
+        val expectedCourses = List.of(courseDto);
         doReturn(expectedCourses).when(courseService).getAll();
+        doReturn(courseResponse).when(courseMapper).toResponse(courseDto);
 
         ResponseEntity<List<CourseResponse>> response = courseController.getAll();
 
         assertThat(response)
             .isNotNull()
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
-            .containsExactly(expectedCourses, OK);
+            .containsExactly(List.of(courseResponse), OK);
         verify(courseService).getAll();
+        verify(courseMapper).toResponse(courseDto);
     }
 
     @Test
     void createCourse() {
-        doReturn(courseResponse).when(courseService).createCourse(courseRequest);
+        doReturn(courseDto).when(courseMapper).toDto(courseRequest);
+        doReturn(courseDto).when(courseService).createCourse(courseDto);
+        doReturn(courseResponse).when(courseMapper).toResponse(courseDto);
 
         val response = courseController.createCourse(courseRequest);
 
@@ -77,12 +95,15 @@ class CourseControllerTest {
             .isNotNull()
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(courseResponse, CREATED);
-        verify(courseService).createCourse(courseRequest);
+        verify(courseMapper).toDto(courseRequest);
+        verify(courseService).createCourse(courseDto);
+        verify(courseMapper).toResponse(courseDto);
     }
 
     @Test
     void getById() {
-        doReturn(courseResponse).when(courseService).getById(courseId);
+        doReturn(courseDto).when(courseService).getById(courseId);
+        doReturn(courseResponse).when(courseMapper).toResponse(courseDto);
 
         val response = courseController.getById(courseId);
 
@@ -91,6 +112,7 @@ class CourseControllerTest {
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(courseResponse, OK);
         verify(courseService).getById(courseId);
+        verify(courseMapper).toResponse(courseDto);
     }
 
     @Test
@@ -131,7 +153,9 @@ class CourseControllerTest {
 
     @Test
     void updateCourse() {
-        doReturn(courseResponse).when(courseService).updateCourse(courseId, courseRequest);
+        doReturn(courseResponse).when(courseMapper).toResponse(courseDto);
+        doReturn(courseDto).when(courseMapper).toDto(courseRequest);
+        doReturn(courseDto).when(courseService).updateCourse(courseId, courseDto);
 
         val response = courseController.updateCourse(courseId, courseRequest);
 
@@ -139,19 +163,23 @@ class CourseControllerTest {
             .isNotNull()
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(courseResponse, OK);
-        verify(courseService).updateCourse(courseId, courseRequest);
+        verify(courseService).updateCourse(courseId, courseMapper.toDto(courseRequest));
+        verify(courseMapper).toResponse(courseDto);
+        verify(courseMapper, times(2)).toDto(courseRequest);
     }
 
     @Test
     void updateCourseException() {
         val message = "Course not found %s".formatted(courseId);
         doThrow(new ResourceNotFoundException(message)).when(courseService)
-            .updateCourse(courseId, courseRequest);
+            .updateCourse(courseId, courseDto);
+        doReturn(courseDto).when(courseMapper).toDto(courseRequest);
 
         assertThatThrownBy(() -> courseController.updateCourse(courseId, courseRequest))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessage(message);
-        verify(courseService).updateCourse(courseId, courseRequest);
+        verify(courseService).updateCourse(courseId, courseDto);
+        verify(courseMapper).toDto(courseRequest);
     }
 
     @Test

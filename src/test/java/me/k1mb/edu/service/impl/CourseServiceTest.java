@@ -1,8 +1,7 @@
 package me.k1mb.edu.service.impl;
 
 import lombok.val;
-import me.k1mb.edu.dto.CourseRequest;
-import me.k1mb.edu.dto.CourseResponse;
+import me.k1mb.edu.dto.CourseDto;
 import me.k1mb.edu.exception.ResourceNotFoundException;
 import me.k1mb.edu.mapper.CourseMapper;
 import me.k1mb.edu.model.Course;
@@ -30,14 +29,14 @@ import static org.mockito.Mockito.*;
 class CourseServiceTest {
 
     final Course course = new Course().setId(randomUUID());
-    final CourseResponse courseResponse = new CourseResponse(
+    final CourseDto courseDto = new CourseDto(
         randomUUID(),
         "title",
         "description",
         randomUUID(),
         null,
-        null);
-    final CourseRequest courseRequest = new CourseRequest("title", "description", randomUUID());
+        null
+    );
     @Mock
     CourseRepository courseRepository;
     @Mock
@@ -45,17 +44,18 @@ class CourseServiceTest {
     @InjectMocks
     CourseServiceImpl courseService;
 
+
     @Test
     void testGetAll() {
         doReturn(List.of(course)).when(courseRepository).findAll();
-        doReturn(courseResponse).when(courseMapper).toDto(course);
+        doReturn(courseDto).when(courseMapper).toDto(course);
 
         val result = courseService.getAll();
 
         assertThat(result)
             .isNotNull()
             .hasSize(1)
-            .isEqualTo(List.of(courseResponse));
+            .isEqualTo(List.of(courseDto));
         verify(courseMapper).toDto(course);
         verify(courseRepository).findAll();
     }
@@ -63,13 +63,13 @@ class CourseServiceTest {
     @Test
     void testGetById() {
         doReturn(of(course)).when(courseRepository).findById(course.getId());
-        doReturn(courseResponse).when(courseMapper).toDto(course);
+        doReturn(courseDto).when(courseMapper).toDto(course);
 
         val result = courseService.getById(course.getId());
 
         assertThat(result)
             .isNotNull()
-            .isEqualTo(courseResponse);
+            .isEqualTo(courseDto);
         verify(courseMapper).toDto(course);
         verify(courseRepository).findById(course.getId());
     }
@@ -87,16 +87,16 @@ class CourseServiceTest {
 
     @Test
     void testCreateCourse() {
-        doReturn(course).when(courseMapper).toEntity(courseRequest);
+        doReturn(course).when(courseMapper).toEntity(courseDto);
         doReturn(course).when(courseRepository).save(course);
-        doReturn(courseResponse).when(courseMapper).toDto(course);
+        doReturn(courseDto).when(courseMapper).toDto(course);
 
-        val result = courseService.createCourse(courseRequest);
+        val result = courseService.createCourse(courseDto);
 
         assertThat(result)
             .isNotNull()
-            .isEqualTo(courseResponse);
-        verify(courseMapper).toEntity(courseRequest);
+            .isEqualTo(courseDto);
+        verify(courseMapper).toEntity(courseDto);
         verify(courseRepository).save(course);
         verify(courseMapper).toDto(course);
     }
@@ -104,17 +104,17 @@ class CourseServiceTest {
     @Test
     void testUpdateCourse() {
         doReturn(of(course)).when(courseRepository).findById(course.getId());
-        doNothing().when(courseMapper).partialUpdate(courseRequest, course);
+        doNothing().when(courseMapper).partialUpdate(courseDto, course);
         doReturn(course).when(courseRepository).save(course);
-        doReturn(courseResponse).when(courseMapper).toDto(course);
+        doReturn(courseDto).when(courseMapper).toDto(course);
 
-        val result = courseService.updateCourse(course.getId(), courseRequest);
+        val result = courseService.updateCourse(course.getId(), courseDto);
 
         assertThat(result)
             .isNotNull()
-            .isEqualTo(courseResponse);
+            .isEqualTo(courseDto);
         verify(courseRepository).findById(course.getId());
-        verify(courseMapper).partialUpdate(courseRequest, course);
+        verify(courseMapper).partialUpdate(courseDto, course);
         verify(courseRepository).save(course);
         verify(courseMapper).toDto(course);
     }
@@ -124,7 +124,7 @@ class CourseServiceTest {
         val id = randomUUID();
         doReturn(empty()).when(courseRepository).findById(id);
 
-        assertThatThrownBy(() -> courseService.updateCourse(id, courseRequest))
+        assertThatThrownBy(() -> courseService.updateCourse(id, courseDto))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessage("Course not found %s".formatted(id));
         verify(courseRepository).findById(id);

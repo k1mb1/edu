@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import me.k1mb.edu.dto.*;
+import me.k1mb.edu.mapper.CourseMapper;
 import me.k1mb.edu.service.CourseService;
 import me.k1mb.edu.service.LessonService;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +29,15 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping(value = "/api/v1/courses", produces = "application/json")
 @ApiResponse(responseCode = "400", description = "Неверный запрос",
     content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
-@ApiResponse(responseCode = "401", description = "Неавторизован")
+@ApiResponse(responseCode = "401", description = "Не авторизован")
 @ApiResponse(responseCode = "403", description = "Запрещено",
     content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
 @Tag(name = "Курсы", description = "API для управления курсами")
 public class CourseController {
     CourseService courseService;
+    CourseMapper courseMapper;
     LessonService lessonService;
+
 
     @Operation(summary = "Получить список всех курсов", description = "Возвращает список всех доступных курсов.")
     @ApiResponse(responseCode = "200", description = "Список курсов успешно получен")
@@ -42,7 +45,8 @@ public class CourseController {
     @GetMapping
     public ResponseEntity<List<CourseResponse>> getAll() {
         return ResponseEntity.status(OK)
-            .body(courseService.getAll());
+            .body(courseService.getAll().stream()
+                .map(courseMapper::toResponse).toList());
     }
 
     @Operation(summary = "Получить детали курса", description = "Возвращает детали конкретного курса по его ID.")
@@ -56,7 +60,8 @@ public class CourseController {
         @PathVariable("course_id") final UUID course_id) {
 
         return ResponseEntity.status(OK)
-            .body(courseService.getById(course_id));
+            .body(courseMapper.toResponse(
+                courseService.getById(course_id)));
     }
 
     @Operation(summary = "Создать новый курс", description = "Создает новый курс с указанными параметрами.")
@@ -66,7 +71,8 @@ public class CourseController {
     public ResponseEntity<CourseResponse> createCourse(@Valid @RequestBody final CourseRequest course) {
 
         return ResponseEntity.status(CREATED)
-            .body(courseService.createCourse(course));
+            .body(courseMapper.toResponse(
+                courseService.createCourse(courseMapper.toDto(course))));
     }
 
     @Operation(summary = "Удалить курс", description = "Удаляет конкретный курс по его ID.")
@@ -94,7 +100,8 @@ public class CourseController {
         @RequestBody final CourseRequest course) {
 
         return ResponseEntity.status(OK)
-            .body(courseService.updateCourse(course_id, course));
+            .body(courseMapper.toResponse(
+                courseService.updateCourse(course_id, courseMapper.toDto(course))));
     }
 
     @Operation(summary = "Получить все уроки по ID курса", description = "Получает список всех уроков для конкретного курса.")
