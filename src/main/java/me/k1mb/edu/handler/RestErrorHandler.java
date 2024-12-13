@@ -1,6 +1,7 @@
 package me.k1mb.edu.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import me.k1mb.edu.dto.ErrorMessage;
 import me.k1mb.edu.exception.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,12 @@ import java.time.LocalDateTime;
 import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
+@Slf4j
 public class RestErrorHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleException(Exception ex, HttpServletRequest request) {
+        log.error(ex.getMessage(), ex);
         ErrorMessage errorMessage = new ErrorMessage(
             LocalDateTime.now(),
             INTERNAL_SERVER_ERROR.value(),
@@ -31,6 +34,8 @@ public class RestErrorHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleResourceNotFoundException(
         ResourceNotFoundException ex, HttpServletRequest request) {
+
+        log.error(ex.getMessage(), ex);
         ErrorMessage errorMessage = new ErrorMessage(
             LocalDateTime.now(),
             NOT_FOUND.value(),
@@ -43,6 +48,7 @@ public class RestErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException ex, HttpServletRequest request) {
+
         ErrorMessage errorMessage = new ErrorMessage(
             LocalDateTime.now(),
             BAD_REQUEST.value(),
@@ -55,6 +61,8 @@ public class RestErrorHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorMessage> handleMethodArgumentTypeMismatchException(
         MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+
+        log.error(ex.getMessage(), ex);
         ErrorMessage errorMessage = new ErrorMessage(
             LocalDateTime.now(),
             BAD_REQUEST.value(),
@@ -67,6 +75,8 @@ public class RestErrorHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorMessage> handleMethodAccessDeniedException(
         AccessDeniedException ex, HttpServletRequest request) {
+
+        log.error(ex.getMessage(), ex);
         ErrorMessage errorMessage = new ErrorMessage(
             LocalDateTime.now(),
             FORBIDDEN.value(),
