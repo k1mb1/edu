@@ -4,6 +4,7 @@ import lombok.val;
 import me.k1mb.edu.dto.*;
 import me.k1mb.edu.exception.ResourceNotFoundException;
 import me.k1mb.edu.mapper.CourseMapper;
+import me.k1mb.edu.mapper.LessonMapper;
 import me.k1mb.edu.model.Course;
 import me.k1mb.edu.service.CourseService;
 import me.k1mb.edu.service.LessonService;
@@ -57,11 +58,20 @@ class CourseControllerTest {
         "title1",
         "description1",
         10);
+    final LessonDto lessonDto = new LessonDto(
+        randomUUID(),
+        course.getId(),
+        "title1",
+        "description1",
+        10
+    );
 
     @Mock
     CourseService courseService;
     @Mock
     CourseMapper courseMapper;
+    @Mock
+    LessonMapper lessonMapper;
     @Mock
     LessonService lessonService;
     @InjectMocks
@@ -184,20 +194,24 @@ class CourseControllerTest {
 
     @Test
     void getAllLessonsByCourseId() {
-        val list = List.of(lessonResponse);
+        val list = List.of(lessonDto);
         doReturn(list).when(lessonService).getAllByCourseId(courseId);
+        doReturn(lessonResponse).when(lessonMapper).toResponse(lessonDto);
 
         val response = courseController.getAllLessonsByCourseId(courseId);
 
         assertThat(response).isNotNull().extracting(
             ResponseEntity::getBody,
-            ResponseEntity::getStatusCode).containsExactly(list, OK);
+            ResponseEntity::getStatusCode).containsExactly(List.of(lessonResponse), OK);
         verify(lessonService).getAllByCourseId(courseId);
+        verify(lessonMapper).toResponse(lessonDto);
     }
 
     @Test
     void createLesson() {
-        doReturn(lessonResponse).when(lessonService).createLesson(courseId, lessonRequest);
+        doReturn(lessonDto).when(lessonService).createLesson(courseId, lessonDto);
+        doReturn(lessonResponse).when(lessonMapper).toResponse(lessonDto);
+        doReturn(lessonDto).when(lessonMapper).toDto(lessonRequest);
 
         val response = courseController.createLesson(courseId, lessonRequest);
 
@@ -205,6 +219,8 @@ class CourseControllerTest {
             .isNotNull()
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(lessonResponse, CREATED);
-        verify(lessonService).createLesson(courseId, lessonRequest);
+        verify(lessonService).createLesson(courseId, lessonDto);
+        verify(lessonMapper).toResponse(lessonDto);
+        verify(lessonMapper).toDto(lessonRequest);
     }
 }

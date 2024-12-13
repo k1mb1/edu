@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import me.k1mb.edu.dto.*;
 import me.k1mb.edu.mapper.CourseMapper;
+import me.k1mb.edu.mapper.LessonMapper;
 import me.k1mb.edu.service.CourseService;
 import me.k1mb.edu.service.LessonService;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class CourseController {
     CourseService courseService;
     CourseMapper courseMapper;
     LessonService lessonService;
-
+    LessonMapper lessonMapper;
 
     @Operation(summary = "Получить список всех курсов", description = "Возвращает список всех доступных курсов.")
     @ApiResponse(responseCode = "200", description = "Список курсов успешно получен")
@@ -115,7 +116,8 @@ public class CourseController {
         @PathVariable("course_id") final UUID course_id) {
 
         return ResponseEntity.status(OK)
-            .body(lessonService.getAllByCourseId(course_id));
+            .body(lessonService.getAllByCourseId(course_id).stream()
+                .map(lessonMapper::toResponse).toList());
     }
 
     @Operation(summary = "Создать новый урок для курса", description = "Создает новый урок для конкретного курса.")
@@ -131,6 +133,7 @@ public class CourseController {
         @RequestBody final LessonRequest lesson) {
 
         return ResponseEntity.status(CREATED)
-            .body(lessonService.createLesson(course_id, lesson));
+            .body(lessonMapper.toResponse(
+                lessonService.createLesson(course_id, lessonMapper.toDto(lesson))));
     }
 }
