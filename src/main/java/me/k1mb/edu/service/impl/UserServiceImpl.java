@@ -20,7 +20,7 @@ class UserServiceImpl implements UserService {
     public User getById(@NonNull final UUID id) {
         return userRepository
             .findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found %s".formatted(id)));
+            .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден %s".formatted(id)));
     }
 
     public User create(@NonNull final User user) {

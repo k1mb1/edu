@@ -49,6 +49,7 @@ public class RestErrorHandler {
     public ResponseEntity<ErrorMessage> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException ex, HttpServletRequest request) {
 
+        log.error(ex.getMessage(), ex);
         ErrorMessage errorMessage = new ErrorMessage(
             LocalDateTime.now(),
             BAD_REQUEST.value(),

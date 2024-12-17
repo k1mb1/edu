@@ -32,7 +32,7 @@ class LessonServiceImpl implements LessonService {
     public LessonDto createLesson(@NonNull final UUID courseId, final @NonNull LessonDto lessonDto) {
 
         val course = courseRepository.findById(courseId)
-            .orElseThrow(() -> new ResourceNotFoundException("Course not found %s".formatted(courseId)));
+            .orElseThrow(() -> new ResourceNotFoundException("Курс с id=%s не найден".formatted(courseId)));
         val lessonEntity = lessonMapper.toEntity(lessonDto);
         return lessonMapper.toDto(
             lessonRepository.save(

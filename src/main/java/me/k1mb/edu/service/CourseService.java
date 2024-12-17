@@ -17,5 +17,5 @@ public interface CourseService {
 
     void deleteCourse(@NonNull UUID id);
 
-    UUID checkAuthor(@NonNull UUID course_id);
+    UUID checkAuthor(@NonNull UUID courseId);
 }

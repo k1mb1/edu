@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true)
 class CourseServiceImpl implements CourseService {
-    static String COURSE_NOT_FOUND = "Course not found %s";
+    static String COURSE_NOT_FOUND = "Курс с id=%s не найден";
     CourseRepository courseRepository;
     CourseMapper courseMapper;
 
@@ -53,10 +53,10 @@ class CourseServiceImpl implements CourseService {
         courseRepository.deleteById(id);
     }
 
-    public UUID checkAuthor(@NonNull final UUID course_id) {
-        return courseRepository.findById(course_id)
+    public UUID checkAuthor(@NonNull final UUID courseId) {
+        return courseRepository.findById(courseId)
             .map(Course::getAuthor)
             .map(User::getId)
-            .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.formatted(course_id)));
+            .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.formatted(courseId)));
     }
 }

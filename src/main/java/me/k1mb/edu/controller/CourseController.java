@@ -55,14 +55,14 @@ public class CourseController {
     @ApiResponse(responseCode = "404", description = "Не найдено",
         content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
-    @GetMapping("/{course_id}")
+    @GetMapping("/{courseId}")
     public ResponseEntity<CourseResponse> getById(
         @Parameter(description = "ID курса", required = true)
-        @PathVariable("course_id") final UUID course_id) {
+        @PathVariable("courseId") final UUID courseId) {
 
         return ResponseEntity.status(OK)
             .body(courseMapper.toResponse(
-                courseService.getById(course_id)));
+                courseService.getById(courseId)));
     }
 
     @Operation(summary = "Создать новый курс", description = "Создает новый курс с указанными параметрами.")
@@ -81,28 +81,28 @@ public class CourseController {
     @ApiResponse(responseCode = "404", description = "Не найдено",
         content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
-    @DeleteMapping("/{course_id}")
+    @DeleteMapping("/{courseId}")
     public ResponseEntity<Void> deleteCourse(
         @Parameter(description = "ID курса", required = true)
-        @PathVariable("course_id") final UUID course_id) {
+        @PathVariable("courseId") final UUID courseId) {
 
-        courseService.deleteCourse(course_id);
+        courseService.deleteCourse(courseId);
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
     @Operation(summary = "Обновить существующий курс", description = "Обновляет существующий курс с предоставленными данными.")
     @ApiResponse(responseCode = "200", description = "Курс успешно обновлен")
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR + AND + IS_AUTHOR)
-    @PutMapping("/{course_id}")
+    @PutMapping("/{courseId}")
     public ResponseEntity<CourseResponse> updateCourse(
         @Parameter(description = "ID курса", required = true)
-        @PathVariable("course_id") final UUID course_id,
+        @PathVariable("courseId") final UUID courseId,
         @Valid
         @RequestBody final CourseRequest course) {
 
         return ResponseEntity.status(OK)
             .body(courseMapper.toResponse(
-                courseService.updateCourse(course_id, courseMapper.toDto(course))));
+                courseService.updateCourse(courseId, courseMapper.toDto(course))));
     }
 
     @Operation(summary = "Получить все уроки по ID курса", description = "Получает список всех уроков для конкретного курса.")
@@ -110,13 +110,13 @@ public class CourseController {
     @ApiResponse(responseCode = "404", description = "Не найдено",
         content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
-    @GetMapping("/{course_id}/lessons")
+    @GetMapping("/{courseId}/lessons")
     public ResponseEntity<List<LessonResponse>> getAllLessonsByCourseId(
         @Parameter(description = "ID курса", required = true)
-        @PathVariable("course_id") final UUID course_id) {
+        @PathVariable("courseId") final UUID courseId) {
 
         return ResponseEntity.status(OK)
-            .body(lessonService.getAllByCourseId(course_id).stream()
+            .body(lessonService.getAllByCourseId(courseId).stream()
                 .map(lessonMapper::toResponse).toList());
     }
 
@@ -125,15 +125,15 @@ public class CourseController {
     @ApiResponse(responseCode = "404", description = "Не найдено",
         content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
-    @PostMapping("/{course_id}/lessons")
+    @PostMapping("/{courseId}/lessons")
     public ResponseEntity<LessonResponse> createLesson(
         @Parameter(description = "ID курса", required = true)
-        @PathVariable("course_id") final UUID course_id,
+        @PathVariable("courseId") final UUID courseId,
         @Valid
         @RequestBody final LessonRequest lesson) {
 
         return ResponseEntity.status(CREATED)
             .body(lessonMapper.toResponse(
-                lessonService.createLesson(course_id, lessonMapper.toDto(lesson))));
+                lessonService.createLesson(courseId, lessonMapper.toDto(lesson))));
     }
 }
