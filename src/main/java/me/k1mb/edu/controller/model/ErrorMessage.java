@@ -1,4 +1,4 @@
-package me.k1mb.edu.dto;
+package me.k1mb.edu.controller.model;
 
 import java.time.LocalDateTime;
 

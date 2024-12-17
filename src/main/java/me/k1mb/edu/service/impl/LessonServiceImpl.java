@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import me.k1mb.edu.dto.LessonDto;
+import me.k1mb.edu.service.model.LessonDto;
 import me.k1mb.edu.exception.ResourceNotFoundException;
 import me.k1mb.edu.mapper.LessonMapper;
 import me.k1mb.edu.repository.CourseRepository;

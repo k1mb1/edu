@@ -1,10 +1,12 @@
-package me.k1mb.edu.dto;
+package me.k1mb.edu.service.model;
+
+import me.k1mb.edu.repository.model.Course;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * DTO for {@link me.k1mb.edu.model.Course}
+ * DTO for {@link Course}
  */
 public record CourseDto(
     UUID id,

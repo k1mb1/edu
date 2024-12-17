@@ -1,7 +1,7 @@
 package me.k1mb.edu.service;
 
 import lombok.NonNull;
-import me.k1mb.edu.model.User;
+import me.k1mb.edu.repository.model.User;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.UUID;

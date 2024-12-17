@@ -1,8 +1,8 @@
-package me.k1mb.edu.handler;
+package me.k1mb.edu.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import me.k1mb.edu.dto.ErrorMessage;
+import me.k1mb.edu.controller.model.ErrorMessage;
 import me.k1mb.edu.exception.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;

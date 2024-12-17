@@ -1,4 +1,4 @@
-package me.k1mb.edu.model;
+package me.k1mb.edu.repository.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

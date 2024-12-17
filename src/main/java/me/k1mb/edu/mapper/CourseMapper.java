@@ -1,9 +1,9 @@
 package me.k1mb.edu.mapper;
 
-import me.k1mb.edu.dto.CourseDto;
-import me.k1mb.edu.dto.CourseRequest;
-import me.k1mb.edu.dto.CourseResponse;
-import me.k1mb.edu.model.Course;
+import me.k1mb.edu.service.model.CourseDto;
+import me.k1mb.edu.controller.model.CourseRequest;
+import me.k1mb.edu.controller.model.CourseResponse;
+import me.k1mb.edu.repository.model.Course;
 import org.mapstruct.*;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)

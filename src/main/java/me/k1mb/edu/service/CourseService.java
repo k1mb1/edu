@@ -1,7 +1,7 @@
 package me.k1mb.edu.service;
 
 import lombok.NonNull;
-import me.k1mb.edu.dto.CourseDto;
+import me.k1mb.edu.service.model.CourseDto;
 
 import java.util.List;
 import java.util.UUID;

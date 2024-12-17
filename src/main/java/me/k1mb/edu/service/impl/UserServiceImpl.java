@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import me.k1mb.edu.exception.ResourceNotFoundException;
-import me.k1mb.edu.model.User;
+import me.k1mb.edu.repository.model.User;
 import me.k1mb.edu.repository.UserRepository;
 import me.k1mb.edu.service.UserService;
 import org.springframework.security.oauth2.jwt.Jwt;

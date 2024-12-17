@@ -1,9 +1,10 @@
-package me.k1mb.edu.model;
+package me.k1mb.edu.repository.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -11,28 +12,28 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "progress")
-public class Progress {
+@Table(name = "courses")
+public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    User user;
+    @Column(name = "title")
+    String title;
 
-    @ManyToOne
-    @JoinColumn(name = "lesson_id")
-    Lesson lesson;
+    @Column(name = "description", columnDefinition = "TEXT")
+    String description;
 
-    @Column(name = "completed")
-    boolean completed;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    User author;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
 }

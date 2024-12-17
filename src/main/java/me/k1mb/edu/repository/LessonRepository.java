@@ -1,6 +1,6 @@
 package me.k1mb.edu.repository;
 
-import me.k1mb.edu.model.Lesson;
+import me.k1mb.edu.repository.model.Lesson;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
