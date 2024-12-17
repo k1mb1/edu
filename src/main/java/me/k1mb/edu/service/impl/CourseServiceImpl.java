@@ -3,9 +3,9 @@ package me.k1mb.edu.service.impl;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import me.k1mb.edu.service.mapper.CourseEntityMapper;
 import me.k1mb.edu.service.model.CourseDto;
 import me.k1mb.edu.exception.ResourceNotFoundException;
-import me.k1mb.edu.mapper.CourseMapper;
 import me.k1mb.edu.repository.model.Course;
 import me.k1mb.edu.repository.model.User;
 import me.k1mb.edu.repository.CourseRepository;
@@ -21,7 +21,7 @@ import java.util.UUID;
 class CourseServiceImpl implements CourseService {
     static String COURSE_NOT_FOUND = "Курс с id=%s не найден";
     CourseRepository courseRepository;
-    CourseMapper courseMapper;
+    CourseEntityMapper courseMapper;
 
     public List<CourseDto> getAll() {
         return courseRepository.findAll().stream()

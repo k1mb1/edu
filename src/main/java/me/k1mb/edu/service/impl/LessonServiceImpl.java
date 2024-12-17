@@ -4,9 +4,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
+import me.k1mb.edu.service.mapper.LessonEntityMapper;
 import me.k1mb.edu.service.model.LessonDto;
 import me.k1mb.edu.exception.ResourceNotFoundException;
-import me.k1mb.edu.mapper.LessonMapper;
 import me.k1mb.edu.repository.CourseRepository;
 import me.k1mb.edu.repository.LessonRepository;
 import me.k1mb.edu.service.LessonService;
@@ -21,7 +21,7 @@ import java.util.UUID;
 class LessonServiceImpl implements LessonService {
     LessonRepository lessonRepository;
     CourseRepository courseRepository;
-    LessonMapper lessonMapper;
+    LessonEntityMapper lessonMapper;
 
     public List<LessonDto> getAllByCourseId(@NonNull final UUID courseId) {
         return lessonRepository.findAllByCourseId(courseId).stream()

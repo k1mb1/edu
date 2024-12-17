@@ -9,12 +9,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import me.k1mb.edu.controller.mapper.CourseRequestResponseMapper;
+import me.k1mb.edu.controller.mapper.LessonRequestResponseMapper;
 import me.k1mb.edu.controller.model.CourseRequest;
 import me.k1mb.edu.controller.model.CourseResponse;
 import me.k1mb.edu.controller.model.LessonRequest;
 import me.k1mb.edu.controller.model.LessonResponse;
-import me.k1mb.edu.mapper.CourseMapper;
-import me.k1mb.edu.mapper.LessonMapper;
 import me.k1mb.edu.service.CourseService;
 import me.k1mb.edu.service.LessonService;
 import me.k1mb.edu.controller.model.ErrorMessage;
@@ -40,9 +40,9 @@ import static org.springframework.http.HttpStatus.*;
 @Tag(name = "Курсы", description = "API для управления курсами")
 public class CourseController {
     CourseService courseService;
-    CourseMapper courseMapper;
+    CourseRequestResponseMapper courseMapper;
     LessonService lessonService;
-    LessonMapper lessonMapper;
+    LessonRequestResponseMapper lessonMapper;
 
     @Operation(summary = "Получить список всех курсов", description = "Возвращает список всех доступных курсов.")
     @ApiResponse(responseCode = "200", description = "Список курсов успешно получен")

@@ -1,11 +1,11 @@
 package me.k1mb.edu.service.impl;
 
 import lombok.val;
-import me.k1mb.edu.dto.CourseDto;
+import me.k1mb.edu.service.mapper.CourseEntityMapper;
+import me.k1mb.edu.service.model.CourseDto;
 import me.k1mb.edu.exception.ResourceNotFoundException;
-import me.k1mb.edu.mapper.CourseMapper;
-import me.k1mb.edu.model.Course;
-import me.k1mb.edu.model.User;
+import me.k1mb.edu.repository.model.Course;
+import me.k1mb.edu.repository.model.User;
 import me.k1mb.edu.repository.CourseRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +28,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CourseServiceTest {
 
+    final String message = "Курс с id=%s не найден";
     final Course course = new Course().setId(randomUUID());
     final CourseDto courseDto = new CourseDto(
         randomUUID(),
@@ -40,7 +41,7 @@ class CourseServiceTest {
     @Mock
     CourseRepository courseRepository;
     @Mock
-    CourseMapper courseMapper;
+    CourseEntityMapper courseMapper;
     @InjectMocks
     CourseServiceImpl courseService;
 
@@ -81,7 +82,7 @@ class CourseServiceTest {
 
         assertThatThrownBy(() -> courseService.getById(id))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessage("Course not found %s".formatted(id));
+            .hasMessage(message.formatted(id));
         verify(courseRepository).findById(id);
     }
 
@@ -126,7 +127,7 @@ class CourseServiceTest {
 
         assertThatThrownBy(() -> courseService.updateCourse(id, courseDto))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessage("Course not found %s".formatted(id));
+            .hasMessage(message.formatted(id));
         verify(courseRepository).findById(id);
     }
 
@@ -146,7 +147,7 @@ class CourseServiceTest {
 
         assertThatThrownBy(() -> courseService.deleteCourse(id))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessage("Course not found %s".formatted(id));
+            .hasMessage(message.formatted(id));
         verify(courseRepository).existsById(id);
     }
 
@@ -174,7 +175,7 @@ class CourseServiceTest {
 
         assertThatThrownBy(() -> courseService.checkAuthor(courseId))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessage("Course not found %s".formatted(courseId));
+            .hasMessage(message.formatted(courseId));
         verify(courseRepository).findById(courseId);
     }
 }

@@ -1,13 +1,11 @@
-package me.k1mb.edu.mapper;
+package me.k1mb.edu.service.mapper;
 
-import me.k1mb.edu.service.model.CourseDto;
-import me.k1mb.edu.controller.model.CourseRequest;
-import me.k1mb.edu.controller.model.CourseResponse;
 import me.k1mb.edu.repository.model.Course;
+import me.k1mb.edu.service.model.CourseDto;
 import org.mapstruct.*;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface CourseMapper {
+public interface CourseEntityMapper {
     @Mapping(source = "author.id", target = "authorId")
     CourseDto toDto(Course course);
 
@@ -16,12 +14,6 @@ public interface CourseMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(source = "authorId", target = "author.id")
     Course toEntity(CourseDto courseDto);
-
-    @Mapping(target = "authorId", source = "authorId")
-    CourseDto toDto(CourseRequest courseRequest);
-
-    @Mapping(source = "authorId", target = "authorId")
-    CourseResponse toResponse(CourseDto courseDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "authorId", target = "author.id")
