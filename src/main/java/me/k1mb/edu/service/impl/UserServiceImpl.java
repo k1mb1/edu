@@ -3,10 +3,10 @@ package me.k1mb.edu.service.impl;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import me.k1mb.edu.exception.ResourceNotFoundException;
-import me.k1mb.edu.repository.model.User;
 import me.k1mb.edu.repository.UserRepository;
+import me.k1mb.edu.repository.entity.UserEntity;
 import me.k1mb.edu.service.UserService;
+import me.k1mb.edu.service.exception.ResourceNotFoundException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
@@ -17,23 +17,23 @@ import java.util.UUID;
 class UserServiceImpl implements UserService {
     final UserRepository userRepository;
 
-    public User getById(@NonNull final UUID id) {
+    public UserEntity getById(@NonNull final UUID id) {
         return userRepository
             .findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден %s".formatted(id)));
     }
 
-    public User create(@NonNull final User user) {
-        return userRepository.save(user);
+    public UserEntity create(@NonNull final UserEntity userEntity) {
+        return userRepository.save(userEntity);
     }
 
-    public User createFromJwt(@NonNull final Jwt jwt) {
+    public UserEntity createFromJwt(@NonNull final Jwt jwt) {
         val id = UUID.fromString(jwt.getClaim("sub"));
         if (userRepository.existsById(id)) {
             return getById(id);// TODO: временная регистрация пользователей в контексте приложения
         }
 
-        return create(new User()
+        return create(new UserEntity()
             .setId(id)
             .setUsername(jwt.getClaim("name"))
             .setEmail(jwt.getClaim("preferred_username")));

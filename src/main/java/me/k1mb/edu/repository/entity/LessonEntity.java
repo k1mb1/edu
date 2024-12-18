@@ -1,24 +1,25 @@
-package me.k1mb.edu.repository.model;
+package me.k1mb.edu.repository.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.UUID;
 
-@Getter
-@Setter
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.UUID;
+
+@Data
 @Entity
 @Table(name = "lessons")
-public class Lesson {
+public class LessonEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = UUID)
     @Column(name = "id", nullable = false)
     UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "course_id")
-    Course course;
+    CourseEntity courseEntity;
 
     @Column(name = "title")
     String title;

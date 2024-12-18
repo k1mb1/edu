@@ -1,4 +1,4 @@
-package me.k1mb.edu.exception;
+package me.k1mb.edu.service.exception;
 
 import lombok.experimental.StandardException;
 

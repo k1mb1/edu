@@ -1,19 +1,19 @@
-package me.k1mb.edu.repository.model;
+package me.k1mb.edu.repository.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Getter
-@Setter
+import static jakarta.persistence.FetchType.LAZY;
+
+@Data
 @Entity
 @Table(name = "courses")
-public class Course {
+public class CourseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -25,9 +25,9 @@ public class Course {
     @Column(name = "description", columnDefinition = "TEXT")
     String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "author_id")
-    User author;
+    UserEntity author;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

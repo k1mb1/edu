@@ -11,13 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import me.k1mb.edu.controller.mapper.CourseRequestResponseMapper;
 import me.k1mb.edu.controller.mapper.LessonRequestResponseMapper;
-import me.k1mb.edu.controller.model.CourseRequest;
-import me.k1mb.edu.controller.model.CourseResponse;
-import me.k1mb.edu.controller.model.LessonRequest;
-import me.k1mb.edu.controller.model.LessonResponse;
+import me.k1mb.edu.controller.model.*;
 import me.k1mb.edu.service.CourseService;
 import me.k1mb.edu.service.LessonService;
-import me.k1mb.edu.controller.model.ErrorMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-import static me.k1mb.edu.utils.AuthorizationTypeUtil.*;
+import static me.k1mb.edu.controller.utils.AuthorizationTypeUtil.*;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -74,7 +70,6 @@ public class CourseController {
     @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + IS_AUTHOR)
     @PostMapping
     public ResponseEntity<CourseResponse> createCourse(@Valid @RequestBody final CourseRequest course) {
-
         return ResponseEntity.status(CREATED)
             .body(courseMapper.toResponse(
                 courseService.createCourse(courseMapper.toDto(course))));

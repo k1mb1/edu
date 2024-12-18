@@ -3,13 +3,13 @@ package me.k1mb.edu.service.impl;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import me.k1mb.edu.repository.CourseRepository;
+import me.k1mb.edu.repository.entity.CourseEntity;
+import me.k1mb.edu.repository.entity.UserEntity;
+import me.k1mb.edu.service.CourseService;
+import me.k1mb.edu.service.exception.ResourceNotFoundException;
 import me.k1mb.edu.service.mapper.CourseEntityMapper;
 import me.k1mb.edu.service.model.CourseDto;
-import me.k1mb.edu.exception.ResourceNotFoundException;
-import me.k1mb.edu.repository.model.Course;
-import me.k1mb.edu.repository.model.User;
-import me.k1mb.edu.repository.CourseRepository;
-import me.k1mb.edu.service.CourseService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,8 +55,8 @@ class CourseServiceImpl implements CourseService {
 
     public UUID checkAuthor(@NonNull final UUID courseId) {
         return courseRepository.findById(courseId)
-            .map(Course::getAuthor)
-            .map(User::getId)
+            .map(CourseEntity::getAuthor)
+            .map(UserEntity::getId)
             .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.formatted(courseId)));
     }
 }

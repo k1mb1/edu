@@ -4,12 +4,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import me.k1mb.edu.service.mapper.LessonEntityMapper;
-import me.k1mb.edu.service.model.LessonDto;
-import me.k1mb.edu.exception.ResourceNotFoundException;
 import me.k1mb.edu.repository.CourseRepository;
 import me.k1mb.edu.repository.LessonRepository;
 import me.k1mb.edu.service.LessonService;
+import me.k1mb.edu.service.exception.ResourceNotFoundException;
+import me.k1mb.edu.service.mapper.LessonEntityMapper;
+import me.k1mb.edu.service.model.LessonDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +24,7 @@ class LessonServiceImpl implements LessonService {
     LessonEntityMapper lessonMapper;
 
     public List<LessonDto> getAllByCourseId(@NonNull final UUID courseId) {
-        return lessonRepository.findAllByCourseId(courseId).stream()
+        return lessonRepository.findAllByCourseEntityId(courseId).stream()
             .map(lessonMapper::toDto)
             .toList();
     }
@@ -36,6 +36,6 @@ class LessonServiceImpl implements LessonService {
         val lessonEntity = lessonMapper.toEntity(lessonDto);
         return lessonMapper.toDto(
             lessonRepository.save(
-                lessonEntity.setCourse(course)));
+                lessonEntity.setCourseEntity(course)));
     }
 }

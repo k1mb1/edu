@@ -4,18 +4,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import me.k1mb.edu.repository.model.Lesson;
+import me.k1mb.edu.repository.entity.LessonEntity;
 
 import java.util.UUID;
 
 /**
- * DTO request для {@link Lesson}
+ * DTO request для {@link LessonEntity}
  */
 @Schema(description = "DTO запроса для создания или обновления урока")
 public record LessonRequest(
     @NotNull
     @Schema(description = "Идентификатор курса, к которому относится урок",
-        example = "123e4567-e89b-12d3-a456-426614174000",
         requiredMode = Schema.RequiredMode.REQUIRED)
     UUID courseId,
 

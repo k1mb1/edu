@@ -1,22 +1,22 @@
 server:
-  port: ${SERVER_PORT}
+  port: ${SERVER_PORT:8080}
 spring:
   application:
     name: edu
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/edu}
+    username: ${DATASOURCE_USERNAME:postgres}
+    password: ${DATASOURCE_PASSWORD:postgres}
   jpa:
     hibernate:
-      ddl-auto: ${JPA_HIBERNATE_DDL_AUTO}
+      ddl-auto: ${JPA_HIBERNATE_DDL_AUTO:create-drop}
     properties:
       hibernate:
-        show_sql: ${JPA_SHOW_SQL}
-        format_sql: ${JPA_SHOW_SQL}
+        show_sql: ${JPA_SHOW_SQL:false}
+        format_sql: ${JPA_SHOW_SQL:false}
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${OAUTH2_ISSUER_URI}
+          issuer-uri: ${OAUTH2_ISSUER_URI:http://localhost:9080/realms/edu-realm}

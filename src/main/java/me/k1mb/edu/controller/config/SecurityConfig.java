@@ -1,6 +1,7 @@
-package me.k1mb.edu.config;
+package me.k1mb.edu.controller.config;
 
 import lombok.RequiredArgsConstructor;
+import me.k1mb.edu.controller.converter.JwtAuthConverter;
 import me.k1mb.edu.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.time.LocalDateTime;
-
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -20,7 +19,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    final static String[] PUBLIC_ENDPOINTS = {"/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs"};
+    static final String[] PUBLIC_ENDPOINTS = {"/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs"};
 
     final UserService userService;
 

@@ -7,10 +7,10 @@ import me.k1mb.edu.controller.model.CourseRequest;
 import me.k1mb.edu.controller.model.CourseResponse;
 import me.k1mb.edu.controller.model.LessonRequest;
 import me.k1mb.edu.controller.model.LessonResponse;
-import me.k1mb.edu.exception.ResourceNotFoundException;
-import me.k1mb.edu.repository.model.Course;
+import me.k1mb.edu.repository.entity.CourseEntity;
 import me.k1mb.edu.service.CourseService;
 import me.k1mb.edu.service.LessonService;
+import me.k1mb.edu.service.exception.ResourceNotFoundException;
 import me.k1mb.edu.service.model.CourseDto;
 import me.k1mb.edu.service.model.LessonDto;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ import static org.springframework.http.HttpStatus.*;
 class CourseControllerTest {
 
     final UUID courseId = randomUUID();
-    final Course course = new Course().setId(randomUUID());
+    final CourseEntity courseEntity = new CourseEntity().setId(randomUUID());
     final CourseResponse courseResponse = new CourseResponse(
         randomUUID(),
         "title",
@@ -53,19 +53,19 @@ class CourseControllerTest {
         null,
         null);
     final LessonRequest lessonRequest = new LessonRequest(
-        course.getId(),
+        courseEntity.getId(),
         "title1",
         "description1",
         10);
     final LessonResponse lessonResponse = new LessonResponse(
         randomUUID(),
-        course.getId(),
+        courseEntity.getId(),
         "title1",
         "description1",
         10);
     final LessonDto lessonDto = new LessonDto(
         randomUUID(),
-        course.getId(),
+        courseEntity.getId(),
         "title1",
         "description1",
         10
@@ -85,8 +85,8 @@ class CourseControllerTest {
     @Test
     void getAll() {
         val expectedCourses = List.of(courseDto);
-        doReturn(expectedCourses).when(courseService).getAll();
-        doReturn(courseResponse).when(mapper).toResponse(courseDto);
+        when(courseService.getAll()).thenReturn(expectedCourses);
+        when(mapper.toResponse(courseDto)).thenReturn(courseResponse);
 
         ResponseEntity<List<CourseResponse>> response = courseController.getAll();
 
@@ -100,9 +100,9 @@ class CourseControllerTest {
 
     @Test
     void createCourse() {
-        doReturn(courseDto).when(mapper).toDto(courseRequest);
-        doReturn(courseDto).when(courseService).createCourse(courseDto);
-        doReturn(courseResponse).when(mapper).toResponse(courseDto);
+        when(mapper.toDto(courseRequest)).thenReturn(courseDto);
+        when(courseService.createCourse(courseDto)).thenReturn(courseDto);
+        when(mapper.toResponse(courseDto)).thenReturn(courseResponse);
 
         val response = courseController.createCourse(courseRequest);
 
@@ -117,8 +117,8 @@ class CourseControllerTest {
 
     @Test
     void getById() {
-        doReturn(courseDto).when(courseService).getById(courseId);
-        doReturn(courseResponse).when(mapper).toResponse(courseDto);
+        when(courseService.getById(courseId)).thenReturn(courseDto);
+        when(mapper.toResponse(courseDto)).thenReturn(courseResponse);
 
         val response = courseController.getById(courseId);
 
@@ -133,8 +133,8 @@ class CourseControllerTest {
     @Test
     void getByIdException() {
         val message = "Course not found %s".formatted(courseId);
-        doThrow(new ResourceNotFoundException(message))
-            .when(courseService).getById(courseId);
+        when(courseService.getById(courseId))
+            .thenThrow(new ResourceNotFoundException(message));
 
         assertThatThrownBy(() -> courseController.getById(courseId))
             .isInstanceOf(ResourceNotFoundException.class)
@@ -168,9 +168,9 @@ class CourseControllerTest {
 
     @Test
     void updateCourse() {
-        doReturn(courseResponse).when(mapper).toResponse(courseDto);
-        doReturn(courseDto).when(mapper).toDto(courseRequest);
-        doReturn(courseDto).when(courseService).updateCourse(courseId, courseDto);
+        when(mapper.toResponse(courseDto)).thenReturn(courseResponse);
+        when(mapper.toDto(courseRequest)).thenReturn(courseDto);
+        when(courseService.updateCourse(courseId, courseDto)).thenReturn(courseDto);
 
         val response = courseController.updateCourse(courseId, courseRequest);
 
@@ -186,9 +186,9 @@ class CourseControllerTest {
     @Test
     void updateCourseException() {
         val message = "Course not found %s".formatted(courseId);
-        doThrow(new ResourceNotFoundException(message)).when(courseService)
-            .updateCourse(courseId, courseDto);
-        doReturn(courseDto).when(mapper).toDto(courseRequest);
+        when(courseService.updateCourse(courseId, courseDto)).
+            thenThrow(new ResourceNotFoundException(message));
+        when(mapper.toDto(courseRequest)).thenReturn(courseDto);
 
         assertThatThrownBy(() -> courseController.updateCourse(courseId, courseRequest))
             .isInstanceOf(ResourceNotFoundException.class)
@@ -200,8 +200,8 @@ class CourseControllerTest {
     @Test
     void getAllLessonsByCourseId() {
         val list = List.of(lessonDto);
-        doReturn(list).when(lessonService).getAllByCourseId(courseId);
-        doReturn(lessonResponse).when(lessonMapper).toResponse(lessonDto);
+        when(lessonService.getAllByCourseId(courseId)).thenReturn(list);
+        when(lessonMapper.toResponse(lessonDto)).thenReturn(lessonResponse);
 
         val response = courseController.getAllLessonsByCourseId(courseId);
 
@@ -214,9 +214,9 @@ class CourseControllerTest {
 
     @Test
     void createLesson() {
-        doReturn(lessonDto).when(lessonService).createLesson(courseId, lessonDto);
-        doReturn(lessonResponse).when(lessonMapper).toResponse(lessonDto);
-        doReturn(lessonDto).when(lessonMapper).toDto(lessonRequest);
+        when(lessonService.createLesson(courseId, lessonDto)).thenReturn(lessonDto);
+        when(lessonMapper.toResponse(lessonDto)).thenReturn(lessonResponse);
+        when(lessonMapper.toDto(lessonRequest)).thenReturn(lessonDto);
 
         val response = courseController.createLesson(courseId, lessonRequest);
 

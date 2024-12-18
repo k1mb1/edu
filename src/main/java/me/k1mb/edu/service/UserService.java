@@ -1,15 +1,15 @@
 package me.k1mb.edu.service;
 
 import lombok.NonNull;
-import me.k1mb.edu.repository.model.User;
+import me.k1mb.edu.repository.entity.UserEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.UUID;
 
 public interface UserService {
-    User getById(@NonNull UUID id);
+    UserEntity getById(@NonNull UUID id);
 
-    User create(@NonNull User user);
+    UserEntity create(@NonNull UserEntity userEntity);
 
-    User createFromJwt(@NonNull Jwt jwt);
+    UserEntity createFromJwt(@NonNull Jwt jwt);
 }

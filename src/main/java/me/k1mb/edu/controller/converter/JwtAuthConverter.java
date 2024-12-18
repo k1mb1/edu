@@ -1,4 +1,4 @@
-package me.k1mb.edu.config;
+package me.k1mb.edu.controller.converter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

@@ -1,4 +1,4 @@
-package me.k1mb.edu.utils;
+package me.k1mb.edu.controller.utils;
 
 import lombok.experimental.UtilityClass;
 
