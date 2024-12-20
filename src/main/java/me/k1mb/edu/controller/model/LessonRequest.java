@@ -8,6 +8,8 @@ import me.k1mb.edu.repository.entity.LessonEntity;
 
 import java.util.UUID;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 /**
  * DTO request для {@link LessonEntity}
  */
@@ -15,19 +17,19 @@ import java.util.UUID;
 public record LessonRequest(
     @NotNull
     @Schema(description = "Идентификатор курса, к которому относится урок",
-        requiredMode = Schema.RequiredMode.REQUIRED)
+        requiredMode = REQUIRED)
     UUID courseId,
 
     @NotBlank
     @Schema(description = "Название урока",
         example = "Введение в программирование",
-        requiredMode = Schema.RequiredMode.REQUIRED)
+        requiredMode = REQUIRED)
     String title,
 
     @NotBlank
     @Schema(description = "Описание урока",
         example = "В этом уроке вы узнаете основы программирования",
-        requiredMode = Schema.RequiredMode.REQUIRED)
+        requiredMode = REQUIRED)
     String description,
 
     @Positive

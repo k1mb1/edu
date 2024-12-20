@@ -1,13 +1,14 @@
 package me.k1mb.edu.controller.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import me.k1mb.edu.repository.entity.CourseEntity;
 
 import java.util.UUID;
+
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 /**
  * DTO request для {@link CourseEntity}
@@ -18,17 +19,17 @@ public record CourseRequest(
     @Size(max = 255)
     @Schema(description = "Название курса",
         example = "Основы программирования",
-        requiredMode = RequiredMode.REQUIRED)
+        requiredMode = REQUIRED)
     String title,
 
     @NotBlank
     @Schema(description = "Описание курса",
         example = "Курс по основам программирования на языке Java",
-        requiredMode = RequiredMode.REQUIRED)
+        requiredMode = REQUIRED)
     String description,
 
     @NotNull
     @Schema(description = "Идентификатор автора курса",
-        requiredMode = RequiredMode.REQUIRED)
+        requiredMode = REQUIRED)
     UUID authorId) {
 }

@@ -1,6 +1,7 @@
 package me.k1mb.edu.controller.config;
 
 import io.restassured.response.Response;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +45,7 @@ public class TokenUtility {
         return userAccessToken;
     }
 
-    String fetchAccessToken(String username, String password) {
+    String fetchAccessToken(@NonNull String username, @NonNull String password) {
         Response response = given()
             .param("grant_type", grantType)
             .param("client_id", clientId)
