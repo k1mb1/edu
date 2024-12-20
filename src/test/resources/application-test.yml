@@ -1,0 +1,20 @@
+server:
+  port: ${SERVER_PORT:8080}
+  keycloak:
+    client_id: ${KEYCLOAK_CLIENT_ID:edu-client}
+    grant_type: ${KEYCLOAK_GRANT_TYPE:password}
+    client_secret: ${KEYCLOAK_CLIENT_SECRET:hhjU3s2RY2tWTsUQqrilA0e8og26aKcM}
+    admin:
+      username: ${KEYCLOAK_ADMIN_USERNAME:k1mb@mail.com}
+      password: ${KEYCLOAK_ADMIN_PASSWORD:k1mb@mail.com}
+    user:
+      username: ${KEYCLOAK_USER_USERNAME:kimb@mail.com}
+      password: ${KEYCLOAK_USER_PASSWORD:kimb@mail.com}
+spring:
+  application:
+    name: edu
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OAUTH2_ISSUER_URI:http://localhost:9080/realms/edu-realm}
