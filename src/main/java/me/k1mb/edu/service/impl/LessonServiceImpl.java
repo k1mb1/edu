@@ -31,13 +31,11 @@ class LessonServiceImpl implements LessonService {
     }
 
     public LessonDto createLesson(@NonNull final UUID courseId, final @NonNull LessonDto lessonDto) {
-
         val course = courseRepository.findById(courseId)
             .orElseThrow(() -> new ResourceNotFoundException(LESSON_NOT_FOUND.formatted(courseId)));
-        val lessonEntity = lessonMapper.toEntity(lessonDto);
+        val lessonEntity = lessonMapper.toEntity(lessonDto).setCourseEntity(course);
         return lessonMapper.toDto(
-            lessonRepository.save(
-                lessonEntity.setCourseEntity(course)));
+            lessonRepository.save(lessonEntity));
     }
 
     public void deleteLesson(@NonNull UUID courseId, @NonNull UUID lessonId) {

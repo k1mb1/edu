@@ -36,8 +36,7 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
                 extractResourceRoles(jwt).stream())
             .collect(toUnmodifiableSet());
 
-        val user = userService.createFromJwt(jwt);
-        // TODO: временная регистрация пользователей в контексте приложения
+        val user = userService.createFromJwt(jwt); // TODO: временная регистрация пользователей в контексте приложения
 
         return new JwtAuthenticationToken(jwt, authorities, jwt.getSubject());
     }
