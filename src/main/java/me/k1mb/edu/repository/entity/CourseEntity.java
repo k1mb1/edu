@@ -15,9 +15,9 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Data
 @Builder
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @Table(name = "courses")
 public class CourseEntity {
     @Id

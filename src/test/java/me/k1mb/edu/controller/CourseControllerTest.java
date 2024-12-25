@@ -45,7 +45,7 @@ class CourseControllerTest {
     @Mock
     CourseService courseService;
     @Mock
-    CourseRequestResponseMapper mapper;
+    CourseRequestResponseMapper courseMapper;
     @Mock
     LessonRequestResponseMapper lessonMapper;
     @Mock
@@ -57,7 +57,7 @@ class CourseControllerTest {
     void getAll() {
         when(courseService.getAll())
             .thenReturn(List.of(courseDto));
-        when(mapper.toResponse(courseDto))
+        when(courseMapper.toResponse(courseDto))
             .thenReturn(courseResponse);
 
         assertThat(courseController.getAll())
@@ -65,32 +65,32 @@ class CourseControllerTest {
             .containsExactly(List.of(courseResponse), OK);
 
         verify(courseService).getAll();
-        verify(mapper).toResponse(courseDto);
+        verify(courseMapper).toResponse(courseDto);
     }
 
     @Test
     void createCourse() {
-        when(mapper.toDto(courseRequest))
+        when(courseMapper.toDto(courseRequest))
             .thenReturn(courseDto);
         when(courseService.createCourse(courseDto))
             .thenReturn(courseDto);
-        when(mapper.toResponse(courseDto))
+        when(courseMapper.toResponse(courseDto))
             .thenReturn(courseResponse);
 
         assertThat(courseController.createCourse(courseRequest))
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(courseResponse, CREATED);
 
-        verify(mapper).toDto(courseRequest);
+        verify(courseMapper).toDto(courseRequest);
         verify(courseService).createCourse(courseDto);
-        verify(mapper).toResponse(courseDto);
+        verify(courseMapper).toResponse(courseDto);
     }
 
     @Test
     void getById() {
         when(courseService.getById(courseId))
             .thenReturn(courseDto);
-        when(mapper.toResponse(courseDto))
+        when(courseMapper.toResponse(courseDto))
             .thenReturn(courseResponse);
 
         assertThat(courseController.getById(courseId))
@@ -98,7 +98,7 @@ class CourseControllerTest {
             .containsExactly(courseResponse, OK);
 
         verify(courseService).getById(courseId);
-        verify(mapper).toResponse(courseDto);
+        verify(courseMapper).toResponse(courseDto);
     }
 
     @Test
@@ -141,9 +141,9 @@ class CourseControllerTest {
 
     @Test
     void updateCourse() {
-        when(mapper.toResponse(courseDto))
+        when(courseMapper.toResponse(courseDto))
             .thenReturn(courseResponse);
-        when(mapper.toDto(courseRequest))
+        when(courseMapper.toDto(courseRequest))
             .thenReturn(courseDto);
         when(courseService.updateCourse(courseId, courseDto))
             .thenReturn(courseDto);
@@ -152,9 +152,9 @@ class CourseControllerTest {
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(courseResponse, OK);
 
-        verify(courseService).updateCourse(courseId, mapper.toDto(courseRequest));
-        verify(mapper).toResponse(courseDto);
-        verify(mapper, times(2)).toDto(courseRequest);
+        verify(courseService).updateCourse(courseId, courseMapper.toDto(courseRequest));
+        verify(courseMapper).toResponse(courseDto);
+        verify(courseMapper, times(2)).toDto(courseRequest);
     }
 
     @Test
@@ -162,7 +162,7 @@ class CourseControllerTest {
         val message = getCourseNotFoundMessage(courseId);
         when(courseService.updateCourse(courseId, courseDto)).
             thenThrow(new ResourceNotFoundException(message));
-        when(mapper.toDto(courseRequest))
+        when(courseMapper.toDto(courseRequest))
             .thenReturn(courseDto);
 
         assertThatThrownBy(() -> courseController.updateCourse(courseId, courseRequest))
@@ -170,7 +170,7 @@ class CourseControllerTest {
             .hasMessage(message);
 
         verify(courseService).updateCourse(courseId, courseDto);
-        verify(mapper).toDto(courseRequest);
+        verify(courseMapper).toDto(courseRequest);
     }
 
     @Test

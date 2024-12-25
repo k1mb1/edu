@@ -13,10 +13,10 @@ import java.util.UUID;
 
 @Data
 @Builder
-@Entity
-@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "users")
 public class UserEntity {
     @Id
     @Column(name = "id")
