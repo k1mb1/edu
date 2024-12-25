@@ -33,9 +33,10 @@ class UserServiceImpl implements UserService {
             return getById(id);// TODO: временная регистрация пользователей в контексте приложения
         }
 
-        return create(new UserEntity()
-            .setId(id)
-            .setUsername(jwt.getClaim("name"))
-            .setEmail(jwt.getClaim("preferred_username")));
+        return create(UserEntity.builder()
+            .id(id)
+            .email(jwt.getClaim("preferred_username"))
+            .username(jwt.getClaim("name"))
+            .build());
     }
 }

@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 class CourseServiceTest {
 
     final String message = "Курс с id=%s не найден";
-    final CourseEntity courseEntity = new CourseEntity().setId(randomUUID());
+    final CourseEntity courseEntity = CourseEntity.builder().id(randomUUID()).build();
     final CourseDto courseDto = new CourseDto(
         randomUUID(),
         "title",
@@ -52,26 +52,24 @@ class CourseServiceTest {
         when(courseRepository.findAll()).thenReturn(List.of(courseEntity));
         when(courseMapper.toDto(courseEntity)).thenReturn(courseDto);
 
-        val result = courseService.getAll();
-
-        assertThat(result)
-            .isNotNull()
+        assertThat(courseService.getAll())
             .hasSize(1)
             .isEqualTo(List.of(courseDto));
+
         verify(courseMapper).toDto(courseEntity);
         verify(courseRepository).findAll();
     }
 
     @Test
     void testGetById() {
-        when(courseRepository.findById(courseEntity.getId())).thenReturn(of(courseEntity));
-        when(courseMapper.toDto(courseEntity)).thenReturn(courseDto);
+        when(courseRepository.findById(courseEntity.getId()))
+            .thenReturn(of(courseEntity));
+        when(courseMapper.toDto(courseEntity))
+            .thenReturn(courseDto);
 
-        val result = courseService.getById(courseEntity.getId());
-
-        assertThat(result)
-            .isNotNull()
+        assertThat(courseService.getById(courseEntity.getId()))
             .isEqualTo(courseDto);
+
         verify(courseMapper).toDto(courseEntity);
         verify(courseRepository).findById(courseEntity.getId());
     }
@@ -79,25 +77,28 @@ class CourseServiceTest {
     @Test
     void testGetByIdNotFound() {
         val id = randomUUID();
-        when(courseRepository.findById(id)).thenReturn(empty());
+        when(courseRepository.findById(id))
+            .thenReturn(empty());
 
         assertThatThrownBy(() -> courseService.getById(id))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessage(message.formatted(id));
+
         verify(courseRepository).findById(id);
     }
 
     @Test
     void testCreateCourse() {
-        when(courseMapper.toEntity(courseDto)).thenReturn(courseEntity);
-        when(courseRepository.save(courseEntity)).thenReturn(courseEntity);
-        when(courseMapper.toDto(courseEntity)).thenReturn(courseDto);
+        when(courseMapper.toEntity(courseDto))
+            .thenReturn(courseEntity);
+        when(courseRepository.save(courseEntity))
+            .thenReturn(courseEntity);
+        when(courseMapper.toDto(courseEntity))
+            .thenReturn(courseDto);
 
-        val result = courseService.createCourse(courseDto);
-
-        assertThat(result)
-            .isNotNull()
+        assertThat(courseService.createCourse(courseDto))
             .isEqualTo(courseDto);
+
         verify(courseMapper).toEntity(courseDto);
         verify(courseRepository).save(courseEntity);
         verify(courseMapper).toDto(courseEntity);
@@ -105,15 +106,17 @@ class CourseServiceTest {
 
     @Test
     void testUpdateCourse() {
-        when(courseRepository.findById(courseEntity.getId())).thenReturn(of(courseEntity));
-        when(courseRepository.save(courseEntity)).thenReturn(courseEntity);
-        when(courseMapper.toDto(courseEntity)).thenReturn(courseDto);
+        when(courseRepository.findById(courseEntity.getId()))
+            .thenReturn(of(courseEntity));
+        when(courseRepository.save(courseEntity))
+            .thenReturn(courseEntity);
+        when(courseMapper.toDto(courseEntity))
+            .thenReturn(courseDto);
 
-        val result = courseService.updateCourse(courseEntity.getId(), courseDto);
 
-        assertThat(result)
-            .isNotNull()
+        assertThat(courseService.updateCourse(courseEntity.getId(), courseDto))
             .isEqualTo(courseDto);
+
         verify(courseRepository).findById(courseEntity.getId());
         verify(courseMapper).partialUpdate(courseDto, courseEntity);
         verify(courseRepository).save(courseEntity);
@@ -123,17 +126,20 @@ class CourseServiceTest {
     @Test
     void testUpdateCourseNotFound() {
         val id = randomUUID();
-        when(courseRepository.findById(id)).thenReturn(empty());
+        when(courseRepository.findById(id))
+            .thenReturn(empty());
 
         assertThatThrownBy(() -> courseService.updateCourse(id, courseDto))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessage(message.formatted(id));
+
         verify(courseRepository).findById(id);
     }
 
     @Test
     void testDeleteCourse() {
-        when(courseRepository.existsById(courseEntity.getId())).thenReturn(true);
+        when(courseRepository.existsById(courseEntity.getId()))
+            .thenReturn(true);
 
         courseService.deleteCourse(courseEntity.getId());
 
@@ -143,11 +149,13 @@ class CourseServiceTest {
     @Test
     void testDeleteCourseNotFound() {
         val id = randomUUID();
-        when(courseRepository.existsById(id)).thenReturn(false);
+        when(courseRepository.existsById(id))
+            .thenReturn(false);
 
         assertThatThrownBy(() -> courseService.deleteCourse(id))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessage(message.formatted(id));
+
         verify(courseRepository).existsById(id);
     }
 
@@ -158,24 +166,25 @@ class CourseServiceTest {
         val courseId = randomUUID();
         courseEntity.setAuthor(user);
 
-        when(courseRepository.findById(courseId)).thenReturn(of(courseEntity));
+        when(courseRepository.findById(courseId))
+            .thenReturn(of(courseEntity));
 
-        val result = courseService.checkAuthor(courseId);
-
-        assertThat(result)
-            .isNotNull()
+        assertThat(courseService.checkAuthor(courseId))
             .isEqualTo(authorId);
+
         verify(courseRepository).findById(courseId);
     }
 
     @Test
     void testCheckAuthorNotFound() {
         val courseId = randomUUID();
-        when(courseRepository.findById(courseId)).thenReturn(empty());
+        when(courseRepository.findById(courseId))
+            .thenReturn(empty());
 
         assertThatThrownBy(() -> courseService.checkAuthor(courseId))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessage(message.formatted(courseId));
+
         verify(courseRepository).findById(courseId);
     }
 }

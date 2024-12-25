@@ -24,7 +24,7 @@ public class RestErrorHandler {
         Exception ex,
         HttpServletRequest request) {
 
-        log.error(ex.getMessage(), ex);
+        log.error(ex.getMessage());
         return new ResponseEntity<>(
             new ErrorMessage(
                 LocalDateTime.now(),
@@ -40,7 +40,7 @@ public class RestErrorHandler {
         ResourceNotFoundException ex,
         HttpServletRequest request) {
 
-        log.error(ex.getMessage(), ex);
+        log.error(ex.getMessage());
         return new ResponseEntity<>(
             new ErrorMessage(
                 LocalDateTime.now(),
@@ -56,7 +56,7 @@ public class RestErrorHandler {
         MethodArgumentNotValidException ex,
         HttpServletRequest request) {
 
-        log.error(ex.getMessage(), ex);
+        log.error(ex.getMessage());
         return new ResponseEntity<>(
             new ErrorMessage(
                 LocalDateTime.now(),
@@ -72,7 +72,7 @@ public class RestErrorHandler {
         MethodArgumentTypeMismatchException ex,
         HttpServletRequest request) {
 
-        log.error(ex.getMessage(), ex);
+        log.error(ex.getMessage());
         return new ResponseEntity<>(
             new ErrorMessage(
                 LocalDateTime.now(),
@@ -88,7 +88,7 @@ public class RestErrorHandler {
         AccessDeniedException ex,
         HttpServletRequest request) {
 
-        log.error(ex.getMessage(), ex);
+        log.error(ex.getMessage());
         return new ResponseEntity<>(
             new ErrorMessage(
                 LocalDateTime.now(),

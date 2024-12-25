@@ -19,6 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true)
 class LessonServiceImpl implements LessonService {
+    static String LESSON_NOT_FOUND = "Урок с id=%s не найден";
     LessonRepository lessonRepository;
     CourseRepository courseRepository;
     LessonEntityMapper lessonMapper;
@@ -32,10 +33,20 @@ class LessonServiceImpl implements LessonService {
     public LessonDto createLesson(@NonNull final UUID courseId, final @NonNull LessonDto lessonDto) {
 
         val course = courseRepository.findById(courseId)
-            .orElseThrow(() -> new ResourceNotFoundException("Курс с id=%s не найден".formatted(courseId)));
+            .orElseThrow(() -> new ResourceNotFoundException(LESSON_NOT_FOUND.formatted(courseId)));
         val lessonEntity = lessonMapper.toEntity(lessonDto);
         return lessonMapper.toDto(
             lessonRepository.save(
                 lessonEntity.setCourseEntity(course)));
+    }
+
+    public void deleteLesson(@NonNull UUID courseId, @NonNull UUID lessonId) {
+        val lesson = lessonRepository.findById(lessonId)
+            .orElseThrow(() -> new ResourceNotFoundException(LESSON_NOT_FOUND.formatted(lessonId)));
+        if (!lesson.getCourseEntity().getId().equals(courseId)) {
+            throw new IllegalArgumentException("Урок не принадлежит курсу");
+        }
+
+        lessonRepository.delete(lesson);
     }
 }

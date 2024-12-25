@@ -10,4 +10,6 @@ public interface LessonService {
     List<LessonDto> getAllByCourseId(@NonNull UUID courseId);
 
     LessonDto createLesson(@NonNull UUID courseId, @NonNull LessonDto lessonDto);
+
+    void deleteLesson(@NonNull UUID courseId,@NonNull UUID lessonId);
 }

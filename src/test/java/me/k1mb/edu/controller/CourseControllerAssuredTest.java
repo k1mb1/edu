@@ -1,7 +1,6 @@
 package me.k1mb.edu.controller;
 
 import io.restassured.RestAssured;
-import lombok.val;
 import me.k1mb.edu.controller.config.TestDatabaseConfig;
 import me.k1mb.edu.controller.config.TestPostgreSQLContainer;
 import me.k1mb.edu.controller.config.TokenUtility;
@@ -47,6 +46,7 @@ class CourseControllerAssuredTest {
     TokenUtility tokenUtility;
     @LocalServerPort
     int port;
+    String adminToken;
 
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
@@ -59,13 +59,12 @@ class CourseControllerAssuredTest {
     void setUp() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
+        adminToken = tokenUtility.getAdminAccessToken();
     }
 
     @Test
     @Order(1)
     void testCreateCourse() {
-        String adminToken = tokenUtility.getAdminAccessToken();
-
         createdCourseId = given()
             .contentType(JSON)
             .header("Authorization", "Bearer " + adminToken)
@@ -86,8 +85,6 @@ class CourseControllerAssuredTest {
     @Test
     @Order(2)
     void testGetCourse() {
-        String adminToken = tokenUtility.getAdminAccessToken();
-
         given()
             .contentType(JSON)
             .header("Authorization", "Bearer " + adminToken)
@@ -103,7 +100,6 @@ class CourseControllerAssuredTest {
     @Test
     @Order(3)
     void testUpdateCourse() {
-        String adminToken = tokenUtility.getAdminAccessToken();
         CourseRequest updatedCourseRequest = new CourseRequest(
             "Обновленный курс",
             "Обновленное описание курса",
@@ -124,11 +120,9 @@ class CourseControllerAssuredTest {
     @Test
     @Order(4)
     void testGetAllCourses() {
-        val accessTokenAdmin = tokenUtility.getAdminAccessToken();
-
         given()
             .contentType(JSON)
-            .header("Authorization", "Bearer " + accessTokenAdmin)
+            .header("Authorization", "Bearer " + adminToken)
             .when()
             .get("/api/v1/courses")
             .then()
@@ -137,44 +131,10 @@ class CourseControllerAssuredTest {
             .body("size()", greaterThan(0));
     }
 
+
     @Test
     @Order(5)
-    void testDeleteCourse() {
-        String adminToken = tokenUtility.getAdminAccessToken();
-
-        given()
-            .contentType(JSON)
-            .header("Authorization", "Bearer " + adminToken)
-            .when()
-            .delete("/api/v1/courses/{courseId}", createdCourseId)
-            .then()
-            .statusCode(NO_CONTENT.value());
-
-        given()
-            .contentType(JSON)
-            .header("Authorization", "Bearer " + adminToken)
-            .when()
-            .get("/api/v1/courses/{courseId}", createdCourseId)
-            .then()
-            .statusCode(NOT_FOUND.value());
-    }
-
-    @Test
-    @Order(6)
     void testCreateLesson() {
-        String adminToken = tokenUtility.getAdminAccessToken();
-
-        createdCourseId = given()
-            .contentType(JSON)
-            .header("Authorization", "Bearer " + adminToken)
-            .body(courseRequest)
-            .when()
-            .post("/api/v1/courses")
-            .then()
-            .statusCode(CREATED.value())
-            .extract()
-            .path("id");
-
         LessonRequest lessonRequest = new LessonRequest(
             UUID.fromString(createdCourseId),
             "Введение в Java",
@@ -197,9 +157,8 @@ class CourseControllerAssuredTest {
     }
 
     @Test
+    @Order(6)
     void testGetAllLessonsByCourseId() {
-        String adminToken = tokenUtility.getAdminAccessToken();
-
         given()
             .contentType(JSON)
             .header("Authorization", "Bearer " + adminToken)
@@ -208,6 +167,42 @@ class CourseControllerAssuredTest {
             .then()
             .statusCode(HttpStatus.OK.value())
             .body("size()", greaterThan(0));
+    }
+
+    @Test
+    @Order(7)
+    void testDeleteLesson() {
+        given()
+            .contentType(JSON)
+            .header("Authorization", "Bearer " + adminToken)
+            .when()
+            .delete("/api/v1/courses/{courseId}/lessons/{lessonId}", createdCourseId, createdLessonId)
+            .then()
+            .statusCode(NO_CONTENT.value());
+    }
+
+    @Test
+    @Order(8)
+    void testDeleteCourse() {
+        given()
+            .contentType(JSON)
+            .header("Authorization", "Bearer " + adminToken)
+            .when()
+            .delete("/api/v1/courses/{courseId}", createdCourseId)
+            .then()
+            .statusCode(NO_CONTENT.value());
+    }
+
+    @Test
+    @Order(9)
+    void testGetCourseException() {
+        given()
+            .contentType(JSON)
+            .header("Authorization", "Bearer " + adminToken)
+            .when()
+            .get("/api/v1/courses/{courseId}", createdCourseId)
+            .then()
+            .statusCode(NOT_FOUND.value());
     }
 
 }

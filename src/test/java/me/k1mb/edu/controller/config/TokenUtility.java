@@ -1,6 +1,5 @@
 package me.k1mb.edu.controller.config;
 
-import io.restassured.response.Response;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -46,7 +45,7 @@ public class TokenUtility {
     }
 
     String fetchAccessToken(@NonNull String username, @NonNull String password) {
-        Response response = given()
+        return given()
             .param("grant_type", grantType)
             .param("client_id", clientId)
             .param("client_secret", clientSecret)
@@ -58,8 +57,7 @@ public class TokenUtility {
             .statusCode(OK.value())
             .contentType(JSON)
             .extract()
-            .response();
-
-        return response.jsonPath().getString("access_token");
+            .response()
+            .jsonPath().getString("access_token");
     }
 }

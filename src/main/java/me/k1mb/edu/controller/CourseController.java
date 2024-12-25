@@ -135,4 +135,20 @@ public class CourseController {
             .body(lessonMapper.toResponse(
                 lessonService.createLesson(courseId, lessonMapper.toDto(lesson))));
     }
+
+    @Operation(summary = "Удалить урок по ID урока", description = "Удаляет конкретный урок по его ID с конкретного курса.")
+    @ApiResponse(responseCode = "204", description = "Урок успешно удален")
+    @ApiResponse(responseCode = "404", description = "Не найдено",
+        content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
+    @PreAuthorize(ROLE_ADMIN + OR + ROLE_USER + AND + CHECK_COURSE_AUTHOR)
+    @DeleteMapping("/{courseId}/lessons/{lessonId}")
+    public ResponseEntity<LessonResponse> deleteLesson(
+        @Parameter(description = "ID курса", required = true)
+        @PathVariable("courseId") final UUID courseId,
+        @Parameter(description = "ID занятия", required = true)
+        @PathVariable("lessonId") final UUID lessonId) {
+
+        lessonService.deleteLesson(courseId, lessonId);
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
 }

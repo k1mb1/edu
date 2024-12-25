@@ -35,6 +35,7 @@ import static org.springframework.http.HttpStatus.*;
 @ExtendWith(MockitoExtension.class)
 class CourseControllerTest {
 
+    static String COURSE_NOT_FOUND = "Курс с id=%s не найден";
     final UUID courseId = randomUUID();
     final CourseEntity courseEntity = new CourseEntity().setId(randomUUID());
     final CourseResponse courseResponse = new CourseResponse(
@@ -70,7 +71,6 @@ class CourseControllerTest {
         "description1",
         10
     );
-
     @Mock
     CourseService courseService;
     @Mock
@@ -84,32 +84,32 @@ class CourseControllerTest {
 
     @Test
     void getAll() {
-        val expectedCourses = List.of(courseDto);
-        when(courseService.getAll()).thenReturn(expectedCourses);
-        when(mapper.toResponse(courseDto)).thenReturn(courseResponse);
+        when(courseService.getAll())
+            .thenReturn(List.of(courseDto));
+        when(mapper.toResponse(courseDto))
+            .thenReturn(courseResponse);
 
-        ResponseEntity<List<CourseResponse>> response = courseController.getAll();
-
-        assertThat(response)
-            .isNotNull()
+        assertThat(courseController.getAll())
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(List.of(courseResponse), OK);
+
         verify(courseService).getAll();
         verify(mapper).toResponse(courseDto);
     }
 
     @Test
     void createCourse() {
-        when(mapper.toDto(courseRequest)).thenReturn(courseDto);
-        when(courseService.createCourse(courseDto)).thenReturn(courseDto);
-        when(mapper.toResponse(courseDto)).thenReturn(courseResponse);
+        when(mapper.toDto(courseRequest))
+            .thenReturn(courseDto);
+        when(courseService.createCourse(courseDto))
+            .thenReturn(courseDto);
+        when(mapper.toResponse(courseDto))
+            .thenReturn(courseResponse);
 
-        val response = courseController.createCourse(courseRequest);
-
-        assertThat(response)
-            .isNotNull()
+        assertThat(courseController.createCourse(courseRequest))
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(courseResponse, CREATED);
+
         verify(mapper).toDto(courseRequest);
         verify(courseService).createCourse(courseDto);
         verify(mapper).toResponse(courseDto);
@@ -117,67 +117,70 @@ class CourseControllerTest {
 
     @Test
     void getById() {
-        when(courseService.getById(courseId)).thenReturn(courseDto);
-        when(mapper.toResponse(courseDto)).thenReturn(courseResponse);
+        when(courseService.getById(courseId))
+            .thenReturn(courseDto);
+        when(mapper.toResponse(courseDto))
+            .thenReturn(courseResponse);
 
-        val response = courseController.getById(courseId);
-
-        assertThat(response)
-            .isNotNull()
+        assertThat(courseController.getById(courseId))
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(courseResponse, OK);
+
         verify(courseService).getById(courseId);
         verify(mapper).toResponse(courseDto);
     }
 
     @Test
     void getByIdException() {
-        val message = "Course not found %s".formatted(courseId);
+        val message = COURSE_NOT_FOUND.formatted(courseId);
         when(courseService.getById(courseId))
             .thenThrow(new ResourceNotFoundException(message));
 
         assertThatThrownBy(() -> courseController.getById(courseId))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessage(message);
+
         verify(courseService).getById(courseId);
     }
 
     @Test
     void deleteCourse() {
-        doNothing().when(courseService).deleteCourse(courseId);
+        doNothing().when(courseService)
+            .deleteCourse(courseId);
 
-        val response = courseController.deleteCourse(courseId);
-
-        assertThat(response).isNotNull()
+        assertThat(courseController.deleteCourse(courseId))
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(null, NO_CONTENT);
+
         verify(courseService).deleteCourse(courseId);
     }
 
     @Test
     void deleteCourseException() {
-        val message = "Course not found %s".formatted(courseId);
+        val message = COURSE_NOT_FOUND.formatted(courseId);
         doThrow(new ResourceNotFoundException(message))
             .when(courseService).deleteCourse(courseId);
 
         assertThatThrownBy(() -> courseController.deleteCourse(courseId))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessage(message);
+
         verify(courseService).deleteCourse(courseId);
     }
 
     @Test
     void updateCourse() {
-        when(mapper.toResponse(courseDto)).thenReturn(courseResponse);
-        when(mapper.toDto(courseRequest)).thenReturn(courseDto);
-        when(courseService.updateCourse(courseId, courseDto)).thenReturn(courseDto);
+        when(mapper.toResponse(courseDto))
+            .thenReturn(courseResponse);
+        when(mapper.toDto(courseRequest))
+            .thenReturn(courseDto);
+        when(courseService.updateCourse(courseId, courseDto))
+            .thenReturn(courseDto);
 
-        val response = courseController.updateCourse(courseId, courseRequest);
-
-        assertThat(response)
-            .isNotNull()
+        assertThat(courseController.updateCourse(courseId, courseRequest))
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(courseResponse, OK);
+
         verify(courseService).updateCourse(courseId, mapper.toDto(courseRequest));
         verify(mapper).toResponse(courseDto);
         verify(mapper, times(2)).toDto(courseRequest);
@@ -185,47 +188,63 @@ class CourseControllerTest {
 
     @Test
     void updateCourseException() {
-        val message = "Course not found %s".formatted(courseId);
+        val message = COURSE_NOT_FOUND.formatted(courseId);
         when(courseService.updateCourse(courseId, courseDto)).
             thenThrow(new ResourceNotFoundException(message));
-        when(mapper.toDto(courseRequest)).thenReturn(courseDto);
+        when(mapper.toDto(courseRequest))
+            .thenReturn(courseDto);
 
         assertThatThrownBy(() -> courseController.updateCourse(courseId, courseRequest))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessage(message);
+
         verify(courseService).updateCourse(courseId, courseDto);
         verify(mapper).toDto(courseRequest);
     }
 
     @Test
     void getAllLessonsByCourseId() {
-        val list = List.of(lessonDto);
-        when(lessonService.getAllByCourseId(courseId)).thenReturn(list);
-        when(lessonMapper.toResponse(lessonDto)).thenReturn(lessonResponse);
+        when(lessonService.getAllByCourseId(courseId))
+            .thenReturn(List.of(lessonDto));
+        when(lessonMapper.toResponse(lessonDto))
+            .thenReturn(lessonResponse);
 
-        val response = courseController.getAllLessonsByCourseId(courseId);
+        assertThat(courseController.getAllLessonsByCourseId(courseId))
+            .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
+            .containsExactly(List.of(lessonResponse), OK);
 
-        assertThat(response).isNotNull().extracting(
-            ResponseEntity::getBody,
-            ResponseEntity::getStatusCode).containsExactly(List.of(lessonResponse), OK);
         verify(lessonService).getAllByCourseId(courseId);
         verify(lessonMapper).toResponse(lessonDto);
     }
 
     @Test
     void createLesson() {
-        when(lessonService.createLesson(courseId, lessonDto)).thenReturn(lessonDto);
-        when(lessonMapper.toResponse(lessonDto)).thenReturn(lessonResponse);
-        when(lessonMapper.toDto(lessonRequest)).thenReturn(lessonDto);
+        when(lessonService.createLesson(courseId, lessonDto))
+            .thenReturn(lessonDto);
+        when(lessonMapper.toResponse(lessonDto))
+            .thenReturn(lessonResponse);
+        when(lessonMapper.toDto(lessonRequest))
+            .thenReturn(lessonDto);
 
-        val response = courseController.createLesson(courseId, lessonRequest);
-
-        assertThat(response)
-            .isNotNull()
+        assertThat(courseController.createLesson(courseId, lessonRequest))
             .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
             .containsExactly(lessonResponse, CREATED);
+
         verify(lessonService).createLesson(courseId, lessonDto);
         verify(lessonMapper).toResponse(lessonDto);
         verify(lessonMapper).toDto(lessonRequest);
+    }
+
+    @Test
+    void deleteLesson() {
+        val lessonId = randomUUID();
+        doNothing().when(lessonService)
+            .deleteLesson(courseId, lessonId);
+
+        assertThat(courseController.deleteLesson(courseId, lessonId))
+            .extracting(ResponseEntity::getBody, ResponseEntity::getStatusCode)
+            .containsExactly(null, NO_CONTENT);
+
+        verify(lessonService).deleteLesson(courseId, lessonId);
     }
 }
