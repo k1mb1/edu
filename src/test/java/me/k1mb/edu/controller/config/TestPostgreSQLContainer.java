@@ -5,7 +5,7 @@ import org.testcontainers.utility.DockerImageName;
 
 public class TestPostgreSQLContainer extends PostgreSQLContainer<TestPostgreSQLContainer> {
 
-    static final String IMAGE_VERSION = "postgres:16";
+    static final String IMAGE_VERSION = "postgres:17.1";
     static TestPostgreSQLContainer container;
 
     private TestPostgreSQLContainer() {

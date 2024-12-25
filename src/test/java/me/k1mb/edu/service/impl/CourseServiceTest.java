@@ -18,6 +18,7 @@ import java.util.List;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.UUID.randomUUID;
+import static me.k1mb.edu.controller.config.BeanUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
@@ -29,16 +30,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CourseServiceTest {
 
-    final String message = "Курс с id=%s не найден";
-    final CourseEntity courseEntity = CourseEntity.builder().id(randomUUID()).build();
-    final CourseDto courseDto = new CourseDto(
-        randomUUID(),
-        "title",
-        "description",
-        randomUUID(),
-        null,
-        null
-    );
+    final CourseEntity courseEntity = getCourseEntity();
+    final CourseDto courseDto = getCourseDto();
     @Mock
     CourseRepository courseRepository;
     @Mock
@@ -82,7 +75,7 @@ class CourseServiceTest {
 
         assertThatThrownBy(() -> courseService.getById(id))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessage(message.formatted(id));
+            .hasMessage(getCourseNotFoundMessage(id));
 
         verify(courseRepository).findById(id);
     }
@@ -131,7 +124,7 @@ class CourseServiceTest {
 
         assertThatThrownBy(() -> courseService.updateCourse(id, courseDto))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessage(message.formatted(id));
+            .hasMessage(getCourseNotFoundMessage(id));
 
         verify(courseRepository).findById(id);
     }
@@ -154,7 +147,7 @@ class CourseServiceTest {
 
         assertThatThrownBy(() -> courseService.deleteCourse(id))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessage(message.formatted(id));
+            .hasMessage(getCourseNotFoundMessage(id));
 
         verify(courseRepository).existsById(id);
     }
@@ -183,7 +176,7 @@ class CourseServiceTest {
 
         assertThatThrownBy(() -> courseService.checkAuthor(courseId))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessage(message.formatted(courseId));
+            .hasMessage(getCourseNotFoundMessage(courseId));
 
         verify(courseRepository).findById(courseId);
     }

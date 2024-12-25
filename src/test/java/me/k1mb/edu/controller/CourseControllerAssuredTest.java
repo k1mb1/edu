@@ -3,7 +3,7 @@ package me.k1mb.edu.controller;
 import io.restassured.RestAssured;
 import me.k1mb.edu.controller.config.TestDatabaseConfig;
 import me.k1mb.edu.controller.config.TestPostgreSQLContainer;
-import me.k1mb.edu.controller.config.TokenUtility;
+import me.k1mb.edu.controller.config.TokenUtil;
 import me.k1mb.edu.controller.model.CourseRequest;
 import me.k1mb.edu.controller.model.LessonRequest;
 import org.junit.jupiter.api.*;
@@ -20,10 +20,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.UUID;
-
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
+import static me.k1mb.edu.controller.config.BeanUtil.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.HttpStatus.*;
 
@@ -36,17 +35,16 @@ class CourseControllerAssuredTest {
 
     @Container
     static final PostgreSQLContainer<?> postgreSQLContainer = TestPostgreSQLContainer.getInstance();
+    final CourseRequest courseRequest = getCourseRequest();
+    final LessonRequest lessonRequest = getLessonRequest();
+    final CourseRequest updatedCourseRequest = getUpdatedCourseRequest();
     static String createdCourseId;
     static String createdLessonId;
-    final CourseRequest courseRequest = new CourseRequest(
-        "Основы программирования",
-        "Курс по основам программирования на языке Java",
-        UUID.fromString("00a8998c-271d-4f1a-968f-821135c11a88"));// TODO UUID переделывать по тестовому пользователю
+    static String adminToken;
     @Autowired
-    TokenUtility tokenUtility;
+    TokenUtil tokenUtil;
     @LocalServerPort
     int port;
-    String adminToken;
 
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
@@ -59,7 +57,7 @@ class CourseControllerAssuredTest {
     void setUp() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
-        adminToken = tokenUtility.getAdminAccessToken();
+        adminToken = tokenUtil.getAdminAccessToken();
     }
 
     @Test
@@ -93,18 +91,13 @@ class CourseControllerAssuredTest {
             .then()
             .statusCode(OK.value())
             .body("id", equalTo(createdCourseId))
-            .body("title", equalTo("Основы программирования"))
-            .body("description", equalTo("Курс по основам программирования на языке Java"));
+            .body("title", equalTo(courseRequest.title()))
+            .body("description", equalTo(courseRequest.description()));
     }
 
     @Test
     @Order(3)
     void testUpdateCourse() {
-        CourseRequest updatedCourseRequest = new CourseRequest(
-            "Обновленный курс",
-            "Обновленное описание курса",
-            UUID.fromString("00a8998c-271d-4f1a-968f-821135c11a88")); // TODO UUID переделывать по тестовому пользователю
-
         given()
             .contentType(JSON)
             .header("Authorization", "Bearer " + adminToken)
@@ -135,12 +128,6 @@ class CourseControllerAssuredTest {
     @Test
     @Order(5)
     void testCreateLesson() {
-        LessonRequest lessonRequest = new LessonRequest(
-            UUID.fromString(createdCourseId),
-            "Введение в Java",
-            "Основные концепции языка Java",
-            10);
-
         createdLessonId = given()
             .contentType(JSON)
             .header("Authorization", "Bearer " + adminToken)
@@ -204,5 +191,4 @@ class CourseControllerAssuredTest {
             .then()
             .statusCode(NOT_FOUND.value());
     }
-
 }

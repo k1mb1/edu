@@ -7,7 +7,6 @@ import me.k1mb.edu.controller.model.CourseRequest;
 import me.k1mb.edu.controller.model.CourseResponse;
 import me.k1mb.edu.controller.model.LessonRequest;
 import me.k1mb.edu.controller.model.LessonResponse;
-import me.k1mb.edu.repository.entity.CourseEntity;
 import me.k1mb.edu.service.CourseService;
 import me.k1mb.edu.service.LessonService;
 import me.k1mb.edu.service.exception.ResourceNotFoundException;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
+import static me.k1mb.edu.controller.config.BeanUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -35,42 +35,13 @@ import static org.springframework.http.HttpStatus.*;
 @ExtendWith(MockitoExtension.class)
 class CourseControllerTest {
 
-    static String COURSE_NOT_FOUND = "Курс с id=%s не найден";
-    final UUID courseId = randomUUID();
-    final CourseEntity courseEntity = new CourseEntity().setId(randomUUID());
-    final CourseResponse courseResponse = new CourseResponse(
-        randomUUID(),
-        "title",
-        "description",
-        courseId,
-        null,
-        null);
-    final CourseRequest courseRequest = new CourseRequest("title", "description", courseId);
-    final CourseDto courseDto = new CourseDto(
-        randomUUID(),
-        "title",
-        "description",
-        courseId,
-        null,
-        null);
-    final LessonRequest lessonRequest = new LessonRequest(
-        courseEntity.getId(),
-        "title1",
-        "description1",
-        10);
-    final LessonResponse lessonResponse = new LessonResponse(
-        randomUUID(),
-        courseEntity.getId(),
-        "title1",
-        "description1",
-        10);
-    final LessonDto lessonDto = new LessonDto(
-        randomUUID(),
-        courseEntity.getId(),
-        "title1",
-        "description1",
-        10
-    );
+    final UUID courseId = getCourseId();
+    final CourseResponse courseResponse = getCourseResponse();
+    final CourseRequest courseRequest = getCourseRequest();
+    final CourseDto courseDto = getCourseDto();
+    final LessonRequest lessonRequest = getLessonRequest();
+    final LessonResponse lessonResponse = getLessonResponse();
+    final LessonDto lessonDto = getLessonDto();
     @Mock
     CourseService courseService;
     @Mock
@@ -132,7 +103,7 @@ class CourseControllerTest {
 
     @Test
     void getByIdException() {
-        val message = COURSE_NOT_FOUND.formatted(courseId);
+        val message = getCourseNotFoundMessage(courseId);
         when(courseService.getById(courseId))
             .thenThrow(new ResourceNotFoundException(message));
 
@@ -157,7 +128,7 @@ class CourseControllerTest {
 
     @Test
     void deleteCourseException() {
-        val message = COURSE_NOT_FOUND.formatted(courseId);
+        val message = getCourseNotFoundMessage(courseId);
         doThrow(new ResourceNotFoundException(message))
             .when(courseService).deleteCourse(courseId);
 
@@ -188,7 +159,7 @@ class CourseControllerTest {
 
     @Test
     void updateCourseException() {
-        val message = COURSE_NOT_FOUND.formatted(courseId);
+        val message = getCourseNotFoundMessage(courseId);
         when(courseService.updateCourse(courseId, courseDto)).
             thenThrow(new ResourceNotFoundException(message));
         when(mapper.toDto(courseRequest))

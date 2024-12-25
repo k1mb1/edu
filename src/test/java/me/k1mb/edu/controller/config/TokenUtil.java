@@ -9,7 +9,7 @@ import static io.restassured.http.ContentType.JSON;
 import static org.springframework.http.HttpStatus.OK;
 
 @Component
-public class TokenUtility {
+public class TokenUtil {
     static String adminAccessToken;
     static String userAccessToken;
 
