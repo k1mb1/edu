@@ -1,49 +1,87 @@
-**Проект: Система для управления онлайн-курсами**
+# Edu Application
 
-### **Описание проекта:**
+This is a Spring Boot-based educational application designed to manage courses and lessons. It provides RESTful APIs for creating, updating, retrieving, and deleting courses and lessons. The application is secured using OAuth2 with Keycloak as the authentication server.
 
-Разработан REST API для платформы управления онлайн-курсами, включающей функционал для аутентификации и авторизации
-пользователей, создания курсов, управления доступом при помощи ролей.
+## Features
 
----
+- **Course Management**: Create, update, retrieve, and delete courses.
+- **Lesson Management**: Add, retrieve, and delete lessons within a course.
+- **Security**: OAuth2 with JWT-based authentication and role-based access control.
+- **Swagger Documentation**: API documentation using OpenAPI 3.0.
+- **Database**: PostgreSQL for data storage.
+- **Docker**: Docker Compose setup for easy deployment of PostgreSQL and Keycloak.
 
-### **Основной функционал:**
+## Technologies
 
-1. **Управление курсами**:
-    - CRUD-операции для курсов (создание, чтение, обновление, удаление).
-    - Привязка курсов к Id пользователя(автору).
+- **Spring Boot**: Core framework for building the application.
+- **Spring Security**: For securing the application with OAuth2.
+- **Spring Data JPA**: For database interactions.
+- **PostgreSQL**: Relational database for storing course and lesson data.
+- **Keycloak**: Open-source Identity and Access Management for authentication and authorization.
+- **Swagger**: For API documentation.
+- **Lombok**: For reducing boilerplate code.
+- **MapStruct**: For mapping between DTOs and entities.
+- **Docker**: For containerizing the application and its dependencies.
 
-2. **Управление пользователями и ролями**:
-    - Разделение пользователей по ролям: *Администратор*, *Пользователь*.
-    - Ограничение доступа к API на основе ролей (RBAC - Role-Based Access Control).
+## Prerequisites
 
-3. **Безопасность**:
-    - Использование **Keycloak** как центра аутентификации и авторизации.
-    - Настройка приложения как **Resource Server** с поддержкой OAuth2.
-    - Интеграция с **Keycloak** для проверки JWT токенов и управления ролями.
+- Java 21
+- Docker
+- Docker Compose
 
-4. **Документирование API**:
-    - Настройка и генерация документации REST API с использованием **Swagger/OpenAPI** для удобства взаимодействия с
-      другими разработчиками.
+## Setup
 
----
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-repo/edu-app.git
+   cd edu-app
+   ```
 
-### **Технологический стек:**
+2. **Set up environment variables**:
+   - Copy `.env.copy` to `.env` and fill in the required values:
+     ```bash
+     cp .env.copy .env
+     ```
 
-- **Back-end**:
-    - **Spring Boot**: основной фреймворк для разработки приложения.
-    - **Spring Security**: защита API и проверка токенов от Keycloak.
-    - **Spring Data JPA**: взаимодействие с базой данных (PostgreSQL).
+3. **Start the services**:
+   - Use Docker Compose to start PostgreSQL and Keycloak:
+     ```bash
+     docker-compose up -d
+     ```
 
-- **Интеграция и безопасность**:
-    - **Keycloak**: аутентификация и авторизация, настройка ролей и управления доступом.
-    - **OAuth2**: использование Bearer токенов для защиты API.
+4. **Run the application**:
+   - You can run the application using Gradle:
+     ```bash
+     ./gradlew bootRun
+     ```
 
-- **Документирование**:
-    - **Swagger/OpenAPI**: документирование всех эндпоинтов для удобства тестирования и разработки.
+## API Documentation
 
-- **База данных**:
-    - **PostgreSQL**: хранение данных о пользователях, ролях, курсах и других сущностях.
+Once the application is running, you can access the Swagger UI at:
+```
+http://localhost:8080/swagger-ui/index.html#/
+```
 
-- **Контейнеризация**:
-    - **Docker**: развёртывание Keycloak и базы данных в контейнерах.
+## Endpoints
+
+### Course Endpoints
+
+- **GET /api/v1/courses**: Get all courses.
+- **GET /api/v1/courses/{courseId}**: Get a specific course by ID.
+- **POST /api/v1/courses**: Create a new course.
+- **PUT /api/v1/courses/{courseId}**: Update an existing course.
+- **DELETE /api/v1/courses/{courseId}**: Delete a course.
+
+### Lesson Endpoints
+
+- **GET /api/v1/courses/{courseId}/lessons**: Get all lessons for a specific course.
+- **POST /api/v1/courses/{courseId}/lessons**: Create a new lesson for a specific course.
+- **DELETE /api/v1/courses/{courseId}/lessons/{lessonId}**: Delete a lesson from a specific course.
+
+## Testing
+
+The application includes unit and integration tests. You can run the tests using Gradle:
+
+```bash
+./gradlew test
+```
